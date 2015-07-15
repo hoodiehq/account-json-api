@@ -1,0 +1,286 @@
+FORMAT: 1A
+
+# account-rest-api
+
+A generic REST-API for all things user accounts and sesions
+
+## Group Session
+
+## Session [/session]
+
+The session resource allows users to sign in, sign out and to check their
+current session status.
+
+### Sign In [POST]
+
++ Request (application/json)
+
+        {
+            "username": "john@example.com",
+            "password": "secret"
+        }
+
++ Response 201 (application/json)
+
+        {
+            "username": "john@example.com",
+            "id": "abc4567",
+            "bearerToken": "validtoken123"
+        }
+
+### Check session [GET]
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer validtoken123
+
++ Response 200 (application/json)
+
+        {
+            "username": "john@example.com",
+            "id": "abc4567"
+        }
+
+
+### Sign Out [DELETE]
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer validtoken123
+
++ Response 200 (application/json)
+
+        {
+            "username": "john@example.com",
+            "id": "abc4567"
+        }
+
+
+
+## Group Accounts
+
+## Accounts [/accounts]
+
+The account resource allows users to sign up, destroy their account, get
+or set account properties, get or set secured properties, or destroy their
+accounts.
+
+Admins can also fetch a list and manage other user accounts.
+
+An account has the following required properties:
+
++ username
++ password
+
+The `password` property is write-only. Both properties can only be changed
+by admins, or by respective users if they pass their password.
+
+Custom user properties and their access can be defined per-application with
+a JSON schema setting.
+
+
+### Sign Up [POST]
+
++ Request (application/json)
+
+        {
+            "username": "john@example.com",
+            "password": "secret",
+            "properties": {
+                "customProperty": "foobar"
+            }
+        }
+
++ Response 201 (application/json)
+
+        {
+            "username": "john@example.com",,
+            "id": "abc4567"
+            "bearerToken": "validtoken123",
+            "properties": {
+                "customProperty": "foobar"
+            }
+        }
+
+
+### List all [GET]
+
+Restricted to admin accounts.
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer validtoken123
+
++ Response 201 (application/json)
+
+        [
+            {
+                "username": "jane@example.com",
+                "id": "def678"
+                "properties": {
+                    "fullName": "Jane Doe"
+                }
+            },
+            {
+                "username": "john@example.com",
+                "id": "abc4567"
+                "properties": {
+                    "customProperty": "foobar"
+                }
+            }
+        ]
+
+
+
+
+## Account [/accounts/{username}]
+
+The account resource is only accessible to admins or signed users users with 
+the matching `username`. The returne properties are only the once with access
+set to `read`, not the ones with `readSecure`. Some properties might have no
+read access at all, they are write only (similar to the built in `password`).
+Others are read only, like `id` and `username`. 
+
++ Parameters
+    + username: john@example.com (required, string) - uername of account
+
+
+### Fetch user account [GET]
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer validtoken123
+
++ Response 201 (application/json)
+
+        [
+            {
+                "username": "jane@example.com",
+                "id": "def678"
+                "properties": {
+                    "fullName": "Jane Doe"
+                }
+            },
+            {
+                "username": "john@example.com",
+                "id": "abc4567"
+                "properties": {
+                    "customProperty": "foobar"
+                }
+            }
+        ]
+
+
+### Update [PATCH]
+
+If changing write-only properties, the user's password must be passed
+as an additional header, including admins.
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer validtoken123
+            X-Password: secret
+            
+    + Body
+
+            {
+                "properties": {
+                    "newProperty": "value",
+                    "secureProperty": "wicked"
+                }
+            }
+
++ Response 201 (application/json)
+
+
+            {
+                "username": "john@example.com",
+                "id": "def678"
+                "properties": {
+                    "customProperty": "foobar",
+                    "newProperty": "value",
+                    "secureProperty": "wicked"
+                }
+            }
+
+
+### Delete [DELETE]
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer validtoken123
+
++ Response 201 (application/json)
+
+
+            {
+                "username": "john@example.com",
+                "id": "def678"
+            }
+
+
+## Account Property [/accounts/{username}/{property}]
+
+The account property resource is only accessible to admins or signed users users with 
+the matching `username`. 
+
+When accessing a secured property, the current user's password must be passed
+
++ Parameters
+    + username: john@example.com (required, string) - uername of account
+    + property: customProperty (required, string) - name of custom user property
+
+
+### Fetch user account property [GET]
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer validtoken123
+
++ Response 201 (application/json)
+
+        "foobar"
+
+
+### Change user account property [PUT]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer validtoken123
+            
+    + Body
+
+            "newfoobar"
+
++ Response 201 (application/json)
+
+        "newfoobar"
+
+
+### remove user account property [DELETE]
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer validtoken123
+
++ Response 201 (application/json)
+
+        "newfoobar"
