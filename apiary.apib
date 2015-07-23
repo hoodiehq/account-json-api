@@ -6,6 +6,7 @@ A generic REST-API for all things user accounts and sessions.
 
 Send your pull-requests to https://github.com/gr2m/account-rest-api
 
+
 ## Group User
 
 ## Session [/session]
@@ -25,9 +26,7 @@ current session status.
 + Response 201 (application/json)
 
         {
-            "username": "john@example.com",
-            "id": "abc4567",
-            "bearerToken": "validtoken123"
+            "id": "sessionid123"
         }
 
 ### Check session [GET]
@@ -36,13 +35,12 @@ current session status.
 
     + Headers
 
-            Authorization: Bearer validtoken123
+            Authorization: Bearer sessionid123
 
 + Response 200 (application/json)
 
         {
-            "username": "john@example.com",
-            "id": "abc4567"
+            "id": "sessionid123"
         }
 
 
@@ -52,28 +50,23 @@ current session status.
 
     + Headers
 
-            Authorization: Bearer validtoken123
+            Authorization: Bearer sessionid123
 
 + Response 200 (application/json)
 
         {
-            "username": "john@example.com",
-            "id": "abc4567"
+            "id": "sessionid123"
         }
 
 
 ## Account [/session/account]
 
 The User account resource allows users to sign up, get
-or set account properties, get or set secured properties, or destroy their
-accounts.
+or set account properties or destroy their accounts.
 
-Returned properties are only the one with access set to `read`,
-not the ones with `readSecure`. Some properties might have no read
-access at all, they are write only (like `password`).
-
-If changing `secureWrite` properties, the user's password must be passed
-as an additional header.
+Destroying an account, and changing account properties
+like username and password, require to pass the user's
+password as `x-password` header.
 
 ### Sign Up [PUT]
 
@@ -82,7 +75,7 @@ as an additional header.
         {
             "username": "john@example.com",
             "password": "secret",
-            "properties": {
+            "profile": {
                 "customProperty": "foobar"
             }
         }
@@ -92,8 +85,8 @@ as an additional header.
         {
             "username": "john@example.com",
             "id": "abc4567"
-            "bearerToken": "validtoken123",
-            "properties": {
+            "bearerToken": "sessionid123",
+            "profile": {
                 "customProperty": "foobar"
             }
         }
@@ -104,14 +97,14 @@ as an additional header.
 
     + Headers
 
-            Authorization: Bearer validtoken123
+            Authorization: Bearer sessionid123
 
 + Response 200 (application/json)
 
         {
             "username": "jane@example.com",
             "id": "def678"
-            "properties": {
+            "profile": {
                 "fullName": "Jane Doe"
             }
         }
@@ -122,29 +115,16 @@ as an additional header.
 
     + Headers
 
-            Authorization: Bearer validtoken123
-            X-Password: secret
+            Authorization: Bearer sessionid123
+            X-Password: currentsecret
 
     + Body
 
             {
-                "properties": {
-                    "customProperty": "new foobar",
-                    "funky": "fresh"
-                }
+                "password": "newsecret"
             }
 
-+ Response 200 (application/json)
-
-        {
-            "username": "john@example.com",
-            "id": "abc4567"
-            "bearerToken": "validtoken123",
-            "properties": {
-                "customProperty": "new foobar",
-                "funky": "fresh"
-            }
-        }
++ Response 204
 
 ### Close [DELETE]
 
@@ -152,78 +132,71 @@ as an additional header.
 
     + Headers
 
-            Authorization: Bearer validtoken123
+            Authorization: Bearer sessionid123
+            X-Password: currentsecret
 
 + Response 200 (application/json)
 
         {
             "username": "john@example.com",
             "id": "abc4567"
-            "bearerToken": "validtoken123",
-            "properties": {
+            "profile": {
                 "customProperty": "foobar"
             }
         }
 
-## Account Property [/session/account/{property}]
 
-When accessing a secured property, the current user's password must be passed
+## Account Profile [/session/account/profile]
 
-+ Parameters
-    + property: customProperty (required, string) - name of custom user property
+All custom user data is stored in the account profile.
 
-
-### Fetch user account property [GET]
+### Fetch user account profile [GET]
 
 + Request
 
     + Headers
 
-            Authorization: Bearer validtoken123
-            X-Password: secret
+            Authorization: Bearer sessionid123
 
 + Response 200 (application/json)
 
-        "foobar"
+        {
+            "fullName": "Jane Doe"
+        }
 
+### Update user account profile [PATCH]
 
-### Change user account property [PUT]
-
-+ Request (application/json)
++ Request
 
     + Headers
 
-            Authorization: Bearer validtoken123
-            X-Password: secret
+            Authorization: Bearer sessionid123
 
     + Body
 
-            "newfoobar"
-
-+ Response 201 (application/json)
-
-        "newfoobar"
-
-
-### remove user account property [DELETE]
-
-+ Request
-
-    + Headers
-
-            Authorization: Bearer validtoken123
-            X-Password: secret
+            {
+                "profile": {
+                    "property": "new value",
+                }
+            }
 
 + Response 200 (application/json)
 
-        "newfoobar"
+        {
+            "profile": {
+                "property": "new value",
+            }
+        }
+
+
+
 
 
 ## Group Admins
 
 ## Accounts [/accounts]
 
-Admins can fetch and manage all user accounts and their properties
+Admins can fetch and manage all user accounts and their profile properties
 (including the ones set to `readSecure`)
 
 ### Create [POST]
@@ -233,7 +206,7 @@ Admins can fetch and manage all user accounts and their properties
         {
             "username": "jane@example.com",
             "password": "secret",
-            "properties": {
+            "profile": {
                 "fullName": "Jane Doe"
             }
         }
@@ -243,8 +216,8 @@ Admins can fetch and manage all user accounts and their properties
         {
             "username": "john@example.com",
             "id": "abc4567"
-            "bearerToken": "validtoken123",
-            "properties": {
+            "bearerToken": "sessionid123",
+            "profile": {
                 "customProperty": "foobar"
             }
         }
@@ -256,7 +229,7 @@ Admins can fetch and manage all user accounts and their properties
 
     + Headers
 
-            Authorization: Bearer validtoken123
+            Authorization: Bearer sessionid123
 
 + Response 200 (application/json)
 
@@ -264,14 +237,14 @@ Admins can fetch and manage all user accounts and their properties
             {
                 "username": "jane@example.com",
                 "id": "def678"
-                "properties": {
+                "profile": {
                     "fullName": "Jane Doe"
                 }
             },
             {
                 "username": "john@example.com",
                 "id": "abc4567"
-                "properties": {
+                "profile": {
                     "customProperty": "foobar"
                 }
             }
@@ -288,14 +261,14 @@ Admins can fetch and manage all user accounts and their properties
 
     + Headers
 
-            Authorization: Bearer validtoken123
+            Authorization: Bearer sessionid123
 
 + Response 200 (application/json)
 
         {
             "username": "jane@example.com",
             "id": "def678"
-            "properties": {
+            "profile": {
                 "fullName": "Jane Doe"
             }
         }
@@ -306,29 +279,18 @@ Admins can fetch and manage all user accounts and their properties
 
     + Headers
 
-            Authorization: Bearer validtoken123
-            X-Password: secret
+            Authorization: Bearer sessionid123
 
     + Body
 
             {
-                "properties": {
+                "profile": {
                     "newProperty": "value",
                     "secureProperty": "wicked"
                 }
             }
 
-+ Response 200 (application/json)
-
-            {
-                "username": "john@example.com",
-                "id": "def678"
-                "properties": {
-                    "customProperty": "foobar",
-                    "newProperty": "value",
-                    "secureProperty": "wicked"
-                }
-            }
++ Response 204
 
 
 ### Delete [DELETE]
@@ -337,7 +299,7 @@ Admins can fetch and manage all user accounts and their properties
 
     + Headers
 
-            Authorization: Bearer validtoken123
+            Authorization: Bearer sessionid123
 
 + Response 200 (application/json)
 
@@ -345,3 +307,85 @@ Admins can fetch and manage all user accounts and their properties
                 "username": "john@example.com",
                 "id": "def678"
             }
+
+
+## requests [/requests]
+
+`GET` is restricted to admins.
+
+### LIST [GET]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer sessionid123
+
++ Response 201 (application/json)
+
+        [
+            {
+                "id": "1234",
+                "type": "passwordreset",
+                "contact": "john@example.com",
+                "expires": "2015-07-20T10:00:00-04:00"
+            },
+            {
+                "id": "2345",
+                "type": "usernamereminder",
+                "contact": "jane@example.com",
+                "expires": "2015-07-20T15:00:00-04:00"
+            }
+        ]
+
+### CREATE [POST]
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "contact": "john@example.com"
+                "type": "passwordreset"
+            }
+
++ Response 201 (application/json)
+
+        {
+            "id": "1234",
+            "type": "passwordreset",
+            "contact": "john@example.com",
+            "expires": "2015-07-20T15:00:00-04:00"
+        }
+
+
+## Request [/requests/{id}]
+
+`DELETE` is restricted to admins. `GET` makes sense for users to check
+for errors that might have occured after creating a request,
+like an error during password reset delivery.
+
++ Parameters
+    + id: 1234 (required, string) - request id
+
+### CREATE [GET]
+
++ Response 200 (application/json)
+
+        {
+            "id": "1234",
+            "type": "passwordreset",
+            "contact": "john@example.com",
+            "expires": "2015-07-20T15:00:00-04:00"
+        }
+
+### CREATE [DELETE]
+
++ Response 200 (application/json)
+
+        {
+            "id": "1234",
+            "type": "passwordreset",
+            "contact": "john@example.com",
+            "expires": "2015-07-20T15:00:00-04:00"
+        }
