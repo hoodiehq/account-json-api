@@ -81,7 +81,9 @@ password as `x-password` header.
         {
             "username": "john@example.com",
             "id": "abc4567",
-            "bearerToken": "sessionid123",
+            "session": {
+                "id": "sessionid123"
+            },
             "profile": {
                 "customProperty": "foobar"
             }
@@ -212,7 +214,6 @@ Admins can fetch and manage all user accounts and their profile properties
         {
             "username": "john@example.com",
             "id": "abc4567",
-            "bearerToken": "sessionid123",
             "profile": {
                 "customProperty": "foobar"
             }
