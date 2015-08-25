@@ -52,11 +52,7 @@ current session status.
 
             Authorization: Bearer sessionid123
 
-+ Response 200 (application/json)
-
-        {
-            "id": "sessionid123"
-        }
++ Response 204
 
 
 ## Account [/session/account]
@@ -84,7 +80,7 @@ password as `x-password` header.
 
         {
             "username": "john@example.com",
-            "id": "abc4567"
+            "id": "abc4567",
             "bearerToken": "sessionid123",
             "profile": {
                 "customProperty": "foobar"
@@ -103,7 +99,7 @@ password as `x-password` header.
 
         {
             "username": "jane@example.com",
-            "id": "def678"
+            "id": "def678",
             "profile": {
                 "fullName": "Jane Doe"
             }
@@ -139,7 +135,7 @@ password as `x-password` header.
 
         {
             "username": "john@example.com",
-            "id": "abc4567"
+            "id": "abc4567",
             "profile": {
                 "customProperty": "foobar"
             }
@@ -176,7 +172,7 @@ All custom user data is stored in the account profile.
 
             {
                 "profile": {
-                    "property": "new value",
+                    "property": "new value"
                 }
             }
 
@@ -184,7 +180,7 @@ All custom user data is stored in the account profile.
 
         {
             "profile": {
-                "property": "new value",
+                "property": "new value"
             }
         }
 
@@ -215,7 +211,7 @@ Admins can fetch and manage all user accounts and their profile properties
 
         {
             "username": "john@example.com",
-            "id": "abc4567"
+            "id": "abc4567",
             "bearerToken": "sessionid123",
             "profile": {
                 "customProperty": "foobar"
@@ -236,14 +232,14 @@ Admins can fetch and manage all user accounts and their profile properties
         [
             {
                 "username": "jane@example.com",
-                "id": "def678"
+                "id": "def678",
                 "profile": {
                     "fullName": "Jane Doe"
                 }
             },
             {
                 "username": "john@example.com",
-                "id": "abc4567"
+                "id": "abc4567",
                 "profile": {
                     "customProperty": "foobar"
                 }
@@ -267,7 +263,7 @@ Admins can fetch and manage all user accounts and their profile properties
 
         {
             "username": "jane@example.com",
-            "id": "def678"
+            "id": "def678",
             "profile": {
                 "fullName": "Jane Doe"
             }
@@ -315,7 +311,8 @@ Admins can fetch and manage all user accounts and their profile properties
 
 ### LIST [GET]
 
-+ Request (application/json)
+
++ Request
 
     + Headers
 
@@ -345,7 +342,7 @@ Admins can fetch and manage all user accounts and their profile properties
     + Body
 
             {
-                "contact": "john@example.com"
+                "contact": "john@example.com",
                 "type": "passwordreset"
             }
 
