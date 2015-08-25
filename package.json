@@ -1,0 +1,27 @@
+{
+  "name": "account-rest-api",
+  "version": "1.0.0",
+  "description": "RESTful API-blueprint for all things user accounts",
+  "main": "index.js",
+  "scripts": {
+    "test": "api-blueprint-validator apiary.apib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gr2m/account-rest-api.git"
+  },
+  "keywords": [
+    "apiary",
+    "api",
+    "blueprint"
+  ],
+  "author": "Gregor Martynus <gregor@martynus.net>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gr2m/account-rest-api/issues"
+  },
+  "homepage": "https://github.com/gr2m/account-rest-api#readme",
+  "devDependencies": {
+    "api-blueprint-validator": "^0.1.3"
+  }
+}
