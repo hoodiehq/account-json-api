@@ -2,7 +2,7 @@ FORMAT: 1A
 
 # account-rest-api
 
-A generic REST-API for all things user accounts and sessions.
+An implementation of a [JSON-API v1](http://jsonapi.org/) RESTful interface for all things user accounts and sessions.
 
 Send your pull-requests to https://github.com/gr2m/account-rest-api
 
@@ -16,43 +16,197 @@ current session status.
 
 ### Sign In [PUT]
 
-+ Request (application/json)
++ Request (application/vnd.api+json)
+
+    + Headers
+
+            Accept: application/vnd.api+json
+    
+    + Body
+
+            {
+                "data": {
+                    "attributes": {
+                        "username": "john@example.com",
+                        "password": "secret"
+                    }
+                }
+            }
+
+
++ Response 201 (application/vnd.api+json)
 
         {
-            "username": "john@example.com",
-            "password": "secret"
+            "links": {
+                "self": "https://example.com/session"
+            },        
+            "data": {
+                "id": "sessionid123",
+                "type": "session"
+            },
+            "related": {
+                "account": {
+                    "links": {
+                        "related": "https://example.com/session/account"
+                    },
+                    "data": {
+                        "id": "abc1234",
+                        "type": "account"
+                    }
+                },
+                "profile": {
+                    "links": {
+                        "related": "https://example.com/session/account/profile"
+                    },
+                    "data": {
+                        "id": "profile",
+                        "type": "accountProfile"
+                    }
+                }
+            }
         }
 
-+ Response 201 (application/json)
++ Response 401 (application/vnd.api+json)
 
         {
-            "id": "sessionid123"
+          errors: [{
+            "statusCode": "401",
+            "error": "Unauthorized",
+            "message": "Invalid Credentials"
+          }]
         }
 
 ### Check session [GET]
 
-+ Request
++ Request (Content-Type: application/vnd.api+json)
 
     + Headers
 
+            Accept: application/vnd.api+json
             Authorization: Bearer sessionid123
 
-+ Response 200 (application/json)
++ Response 200 (Content-Type: application/vnd.api+json)
 
         {
-            "id": "sessionid123"
+            "links": {
+                "self": "https://example.com/session"
+            },
+            "data": {
+                "id": "sessionid123",
+                "type": "session"
+            },
+            "related": {
+                "account": {
+                    "links": {
+                        "related": "https://example.com/session/account"
+                    },
+                    "data": {
+                        "id": "abc1234",
+                        "type": "account"
+                    },
+                    "related": {
+                        "links": {
+                            "related": "https://example.com/session/account/profile"
+                        },
+                        "data": {
+                            "id": "profile",
+                            "type": "accountProfile"
+                        }
+                    }
+                }
+            }
         }
+        
+        
+### Check session, include account + profile [GET /session?include=account.profile]
+
++ Request (Content-Type: application/vnd.api+json)
+
+    + Headers
+
+            Accept: application/vnd.api+json
+            Authorization: Bearer sessionid123
+
++ Response 200 (Content-Type: application/vnd.api+json)
+
+        {
+            "links": {
+                "self": "https://example.com/session"
+            },
+            "data": {
+                "id": "sessionid123",
+                "type": "session"
+            },
+            "related": {
+                "account": {
+                    "links": {
+                        "related": "https://example.com/session/account"
+                    },
+                    "data": {
+                        "id": "abc1234",
+                        "type": "account"
+                    },
+                    "related": {
+                        "links": {
+                            "related": "https://example.com/session/account/profile"
+                        },
+                        "data": {
+                            "id": "profile",
+                            "type": "accountProfile"
+                        }
+                    }
+                }
+            },
+            "included": {
+                "account": {
+                    "links": {
+                        "self": "https://example.com/session/account"
+                    }
+                    "data": {
+                        "id": "abc1234",
+                        "type": "account",
+                        "attributes": {
+                            "fullName": "Jane Doe"
+                        }
+                    },
+                    "related": {
+                        "links": {
+                            "related": "https://example.com/session/account/profile"
+                        },
+                        "data": {
+                            "id": "profile",
+                            "type": "accountProfile"
+                        }
+                    },
+                    "included": {
+                        "profile": {
+                            "links": {
+                                "self": "https://example.com/session/account/profile"
+                            },
+                            "data": {
+                                "id": "profile",
+                                "type": "accountProfile",
+                                "attributes": {
+                                    "fullName": "Jane Doe"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }        
 
 
 ### Sign Out [DELETE]
 
-+ Request
++ Request (application/vnd.api+json)
 
     + Headers
 
+            Accept: application/vnd.api+json
             Authorization: Bearer sessionid123
 
-+ Response 204
++ Response 204 
 
 
 ## Account [/session/account]
@@ -66,82 +220,168 @@ password as `x-password` header.
 
 ### Sign Up [PUT]
 
-+ Request (application/json)
++ Request (application/vnd.api+json)
 
-        {
-            "username": "john@example.com",
-            "password": "secret",
-            "profile": {
-                "customProperty": "foobar"
+    + Headers
+
+            Accept: application/vnd.api+json
+
+    + Body 
+    
+            {
+                "data": {
+                    "attributes": {
+                        "username": "john@example.com",
+                        "password": "secret"
+                    }
+                }
             }
-        }
-
-+ Response 201 (application/json)
+        
++ Response 201 (application/vnd.api+json)
 
         {
-            "username": "john@example.com",
-            "id": "abc4567",
-            "session": {
-                "id": "sessionid123"
+            "links": {
+                "self": "https://example.com/session/account"
             },
-            "profile": {
-                "customProperty": "foobar"
-            }
+            "data" {
+                "id": "abc4567",
+                "type": "account",
+                "attributes": {
+                    "username": "john@example.com",
+                    "session": {
+                        "id": "sessionid123"
+                    }
+                },
+                "relationships": {
+                    "profile": {
+                        "links": {
+                            "related": "https://example.com/session/account/profile"
+                        },
+                        "data": {
+                            "id": "profile",
+                            "type": "accountProfile"
+                        }
+                    }
+                }
+            }            
         }
+        
 
-### Fetch [GET]
+### Fetch [GET /session/account]
 
 + Request
 
     + Headers
 
+            Accept: application/vnd.api+json
             Authorization: Bearer sessionid123
 
-+ Response 200 (application/json)
++ Response 200 (application/vnd.api+json)
 
         {
-            "username": "jane@example.com",
-            "id": "def678",
-            "profile": {
-                "fullName": "Jane Doe"
+            "links": {
+                "self": "https://example.com/session/account"
+            },
+            "data": {
+                "id": "def678",
+                "attributes": {
+                    "username": "jane@example.com"
+                },
+                "relationships": {
+                    "profile": {
+                        "links": {
+                            "related": "https://examples.com/session/account/profile"
+                        },
+                        "data": {
+                            "id": "profile",
+                            "type": "accountProfile"
+                        }
+                    }
+                }
             }
         }
+        
+### Fetch, including profile [GET /session/account?include=profile]
 
-### Change [PATCH]
-
-+ Request (application/json)
++ Request
 
     + Headers
 
+            Accept: application/vnd.api+json
+            Authorization: Bearer sessionid123
+
++ Response 200 (application/vnd.api+json)
+
+        {
+            "links": {
+                "self": "https://example.com/session/account"
+            },
+            "data": {
+                "id": "def678",
+                "attributes": {
+                    "username": "jane@example.com"
+                },
+                "relationships": {
+                    "profile": {
+                        "links": {
+                            "related": "https://examples.com/session/account/profile"
+                        },
+                        "data": {
+                            "id": "profile",
+                            "type": "accountProfile"
+                        }
+                    }
+                }
+            },
+            "included": {
+                "profile": {
+                    "links": {
+                        "self": "https://example.com/session/account/profile"
+                    },
+                    "data": {
+                        "id": "profile",
+                        "type": "accountProfile",
+                        "attributes": {
+                            "fullName": "Jane Doe"
+                        }
+                    }
+                }
+            }
+        }        
+
+### Change [PATCH]
+
++ Request (application/vnd.api+json)
+
+    + Headers
+
+            Accept: application/vnd.api+json
             Authorization: Bearer sessionid123
             X-Password: currentsecret
 
     + Body
 
             {
-                "password": "newsecret"
+                "data": {
+                    "attributes": {
+                        "password": "newsecret"
+                    }
+                }
             }
 
 + Response 204
 
 ### Close [DELETE]
 
-+ Request
++ Request (application/vnd.api+json)
 
     + Headers
 
+            Accept: application/vnd.api+json
             Authorization: Bearer sessionid123
             X-Password: currentsecret
 
-+ Response 200 (application/json)
-
-        {
-            "username": "john@example.com",
-            "id": "abc4567",
-            "profile": {
-                "customProperty": "foobar"
-            }
-        }
++ Response 204
 
 
 ## Account Profile [/session/account/profile]
@@ -150,45 +390,85 @@ All custom user data is stored in the account profile.
 
 ### Fetch user account profile [GET]
 
-+ Request
++ Request (application/vnd.api+json)
 
     + Headers
-
+    
+            Accept: application/vnd.api+json
             Authorization: Bearer sessionid123
 
-+ Response 200 (application/json)
++ Response 200 (application/vnd.api+json)
 
         {
-            "fullName": "Jane Doe"
+          "links": {
+                "self": "https://example.com/session/account/profile"
+          },
+          "data": {
+            "id": "profile",
+            "type": "accountProfile",
+            "attributes": {
+                "fullName": "Jane Doe"
+            }
+          }
         }
+        
+### Create user account profile [PUT]
+
++ Request (application/vnd.api+json)
+
+    + Headers
+    
+            Accept: application/vnd.api+json
+            Authorization: Bearer sessionid123
+        
+    + Body
+    
+            {
+                "data": {
+                    "id": "profile",
+                    "type": "accountProfile",
+                    "attributes": {
+                        "property": "value"
+                    }
+                }
+            }
+
++ Response 200
+
+            {
+                "links": {
+                    "self": "https://example.com/session/account/profile"
+                },
+                "data": {
+                    "id": "profile",
+                    "type": "accountProfile",
+                    "attributes": {
+                        "property": "value"
+                    }
+                }
+            }
+    
 
 ### Update user account profile [PATCH]
 
-+ Request
++ Request (application/vnd.api+json) 
 
     + Headers
 
+            Accept: application/vnd.api+json
             Authorization: Bearer sessionid123
 
     + Body
 
             {
-                "profile": {
-                    "property": "new value"
+              "data": {
+                    "attributes": {
+                        "property": "new value"
+                    }
                 }
             }
 
-+ Response 200 (application/json)
-
-        {
-            "profile": {
-                "property": "new value"
-            }
-        }
-
-
-
-
++ Response 204
 
 ## Group Admins
 
@@ -199,58 +479,120 @@ Admins can fetch and manage all user accounts and their profile properties
 
 ### Create [POST]
 
-+ Request (application/json)
++ Request (application/vnd.api+json)
+
+    + Headers
+    
+            Accept: application/vnd.api+json
+            Authorization: Bearer sessionid123
+        
+    + Body
+
+            {
+                "data": {
+                    "attributes": {
+                        "username": "jane@example.com",
+                        "password": "secret"
+                    }
+                }  
+            }
+
++ Response 201 (application/vnd.api+json)
 
         {
-            "username": "jane@example.com",
-            "password": "secret",
-            "profile": {
-                "fullName": "Jane Doe"
+            "links": {
+                "self": "https://example.com/accounts/abc4567"
+            },
+            "data": {
+                "id": "abc4567",
+                "attributes": {
+                    "username": "jane@example.com"
+                },
+                "relationships": {
+                    "profile": {
+                        "links": {
+                            "related": "https://examples.com/accounts/abc4567/profile"
+                        },
+                        "data": {
+                            "id": "profile",
+                            "type": "accountProfile",
+                        }
+                    }
+                }
             }
         }
-
-+ Response 201 (application/json)
-
-        {
-            "username": "john@example.com",
-            "id": "abc4567",
-            "profile": {
-                "customProperty": "foobar"
-            }
-        }
-
 
 ### List all [GET]
 
 + Request
 
     + Headers
-
+    
+            Accept: application/vnd.api+json
             Authorization: Bearer sessionid123
 
-+ Response 200 (application/json)
++ Response 200 (application/vnd.api+json)
 
-        [
-            {
-                "username": "jane@example.com",
-                "id": "def678",
-                "profile": {
-                    "fullName": "Jane Doe"
+        {
+          "links": {
+            "self": "https://example.com/accounts",
+            "first": "https://example.com/accounts",
+            "last": "https://example.com/accounts?page=2",
+            "next": "https://example.com/accounts?page=2"
+          },
+          "data": [
+                {
+                    "id": "abc4567",                
+                    "type": "accounts",
+                    "links": {
+                        "self": "https://example.com/accounts/abc4567"
+                    },
+                    "attributes": {
+                        "username": "jane@example.com"
+                    },
+                    "relationships": {
+                        "profile": {
+                            "links": {
+                                "realated": "https://example.com/accounts/jane@example.com/profile"
+                            },
+                            "data": {
+                                "id": "profile",
+                                "type": "accountProfile"
+                            }
+                        }
+                    }                
+                },
+                {
+                    "id": "def678",
+                    "type": "accounts",
+                    "links": {
+                        "self": "https://example.com/accounts/def678"
+                    },
+                    "attributes": {
+                        "username": "john@example.com"
+                    },
+                    "relationships": {
+                        "profile": {
+                            "links": {
+                                "related": "https://example.com/accounts/john@example.com/profile"
+                            },
+                            "data": {
+                                "id": "profile",
+                                "type": "accountProfile"
+                            }
+                        }
+                    }                                
                 }
-            },
-            {
-                "username": "john@example.com",
-                "id": "abc4567",
-                "profile": {
-                    "customProperty": "foobar"
-                }
-            }
-        ]
+            ]
+        }
+        
 
 ## Account [/accounts/{username}]
 
 + Parameters
+    
     + username: john@example.com (required, string) - uername of account
+
 
 ### Fetch [GET]
 
@@ -258,36 +600,108 @@ Admins can fetch and manage all user accounts and their profile properties
 
     + Headers
 
+            Accept: application/vnd.api+json
             Authorization: Bearer sessionid123
 
-+ Response 200 (application/json)
++ Response 200 (application/vnd.api+json)
 
-        {
-            "username": "jane@example.com",
-            "id": "def678",
-            "profile": {
-                "fullName": "Jane Doe"
-            }
+
+        {   
+            "links": {
+                "self": "https://example.com/accounts/jane@example.com"
+            },
+            "data": {
+                "id": "def678",
+                "type": "account",
+                "attributes": {
+                    "username": "jane@example.com",
+                }
+            },
+            "relationships": {
+                "profile": {
+                    "data": {
+                        "id": "profile",
+                        "type": "accountProfile"
+                    }
+                }
+            }            
         }
+        
+### Fetch, include profile [GET /accounts/{username}?include=profile]
 
-### Change [PATCH]
-
-+ Request (application/json)
++ Request
 
     + Headers
 
+            Accept: application/vnd.api+json
+            Authorization: Bearer sessionid123
+
++ Response 200 (application/vnd.api+json)
+
+
+        {   
+            "links": {
+                "self": "https://example.com/accounts/jane@example.com"
+            },
+            "data": {
+                "id": "def678",
+                "type": "account",
+                "attributes": {
+                    "username": "jane@example.com",
+                }
+            },
+            "relationships": {
+                "profile": {
+                    "links": {
+                        "related": "https://example.com/session/account/profile"
+                    },
+                    "data": {
+                        "id": "profile",
+                        "type": "accountProfile"
+                    }
+                }
+            }
+            "included": {
+                "profile": {
+                    "links": {
+                        "self": "https://example.com/session/account/profile"
+                    },
+                    "data": {
+                        "id": "profile",
+                        "type": "accountProfile",
+                        "attributes": {
+                            "fullName": "Jane Doe"
+                        }
+                    }
+                }
+            }            
+        }        
+
+### Change [PATCH]
+
++ Request (application/vnd.api+json)
+
+    + Headers
+
+            Accept: application/vnd.api+json
             Authorization: Bearer sessionid123
 
     + Body
 
             {
-                "profile": {
-                    "newProperty": "value",
-                    "secureProperty": "wicked"
+                "data": {
+                    "id": "abc1234",
+                    "type": "account",
+                    "attributes": {
+                        "newProperty": "value",
+                        "secureProperty": "wicked"
+                    }
                 }
             }
+            
 
 + Response 204
+
 
 
 ### Delete [DELETE]
@@ -296,14 +710,96 @@ Admins can fetch and manage all user accounts and their profile properties
 
     + Headers
 
+            Accept: application/vnd.api+json
             Authorization: Bearer sessionid123
 
-+ Response 200 (application/json)
++ Response 204
+
+## Account Profile [/accounts/{username}/profile]
+
+All custom user data is stored in the account profile.
+
+### Fetch user account profile [GET]
+
++ Request (application/vnd.api+json)
+
+    + Headers
+    
+            Accept: application/vnd.api+json
+            Authorization: Bearer sessionid123
+
++ Response 200 (application/vnd.api+json)
+
+        {
+          "links": {
+                "self": "https://example.com/accounts/jane@example.com/profile"
+          },
+          "data": {
+            "id": "profile",
+            "type": "accountProfile",
+            "attributes": {
+                "fullName": "Jane Doe"
+            }
+          }
+        }
+        
+### Create user account profile [PUT]
+
++ Request (application/vnd.api+json)
+
+    + Headers
+    
+            Accept: application/vnd.api+json
+            Authorization: Bearer sessionid123
+        
+    + Body
+    
+            {
+                "data": {
+                    "id": "profile",
+                    "type": "accountProfile",
+                    "attributes": {
+                        "property": "value"
+                    }
+                }
+            }
+
++ Response 200
 
             {
-                "username": "john@example.com",
-                "id": "def678"
+                "links": {
+                    "self": "https://example.com/accounts/jane@example.com/profile"
+                },
+                "data": {
+                    "id": "profile",
+                    "type": "accountProfile",
+                    "attributes": {
+                        "property": "value"
+                    }
+                }
             }
+    
+
+### Update user account profile [PATCH]
+
++ Request (application/vnd.api+json) 
+
+    + Headers
+
+            Accept: application/vnd.api+json
+            Authorization: Bearer sessionid123
+
+    + Body
+
+            {
+              "data": {
+                    "attributes": {
+                        "property": "new value"
+                    }
+                }
+            }
+
++ Response 204
 
 
 ## requests [/requests]
@@ -313,48 +809,85 @@ Admins can fetch and manage all user accounts and their profile properties
 ### LIST [GET]
 
 
-+ Request
++ Request (application/vnd.api+json)
 
     + Headers
 
+            Accept: application/vnd.api+json
             Authorization: Bearer sessionid123
 
-+ Response 201 (application/json)
++ Response 201 (application/vnd.api+json)
 
-        [
-            {
-                "id": "1234",
-                "type": "passwordreset",
-                "contact": "john@example.com",
-                "expires": "2015-07-20T10:00:00-04:00"
+        {
+            "links": {
+                "self": "https://example.com/requests",
+                "first": "https://example.com/requests",
+                "last": "https://example.com/requests?page=2",
+                "next": "https://example.com/requests?page=2"
             },
-            {
-                "id": "2345",
-                "type": "usernamereminder",
-                "contact": "jane@example.com",
-                "expires": "2015-07-20T15:00:00-04:00"
-            }
-        ]
+            "data": [
+                {
+                    "links": {
+                        "self": "https://example.com/requests/1234"
+                    },
+                    "id": "1234",
+                    "type": "requests",
+                    "attributes": {
+                        "type": "passwordreset",
+                        "contact": "john@example.com",
+                        "expires": "2015-07-20T10:00:00-04:00"
+                    }
+                },
+                {
+                    "links": {
+                      "self": "https://example.com/requests/2345"
+                    },
+                    "id": "2345",
+                    "type": "requests",
+                    "attributes": {
+                        "type": "usernamereminder",
+                        "contact": "jane@example.com",
+                        "expires": "2015-07-20T15:00:00-04:00"
+                    }
+                }
+            ]
+        }
 
 ### CREATE [POST]
 
-+ Request (application/json)
++ Request (application/vnd.api+json)
 
+    + Headers
+
+            Accept: application/vnd.api+json
+            
     + Body
 
             {
-                "contact": "john@example.com",
-                "type": "passwordreset"
+              "data": {
+                "type": "passwordreset",
+                "attributes": {
+                  "contact": "john@example.com"
+                }
+              }
             }
 
-+ Response 201 (application/json)
++ Response 201 (application/vnd.api+json)
 
         {
+          "links": {
+            "self": "https://example.com/requests/1234"
+          },
+          "data": {
             "id": "1234",
             "type": "passwordreset",
-            "contact": "john@example.com",
-            "expires": "2015-07-20T15:00:00-04:00"
+            "attributes": {
+              "contact": "john@example.com",
+              "expires": "2015-07-20T15:00:00-04:00"
+            }
+          }
         }
+
 
 
 ## Request [/requests/{id}]
@@ -366,24 +899,25 @@ like an error during password reset delivery.
 + Parameters
     + id: 1234 (required, string) - request id
 
-### CREATE [GET]
+### Fetch request by  id [GET]
 
-+ Response 200 (application/json)
-
-        {
-            "id": "1234",
-            "type": "passwordreset",
-            "contact": "john@example.com",
-            "expires": "2015-07-20T15:00:00-04:00"
-        }
-
-### CREATE [DELETE]
-
-+ Response 200 (application/json)
++ Response 200 (application/vnd.api+json)
 
         {
+          "links": {
+            "self": "https://example.com/requests/1234"
+          },
+          "data": {
             "id": "1234",
+            "type": "requests",
+            "attributes": {
             "type": "passwordreset",
-            "contact": "john@example.com",
-            "expires": "2015-07-20T15:00:00-04:00"
+              "contact": "john@example.com",
+              "expires": "2015-07-20T15:00:00-04:00"
+            }
+          }
         }
+
+### Delete request [DELETE]
+
++ Response 204
