@@ -129,72 +129,72 @@ current session status.
 
 + Response 200 (Content-Type: application/vnd.api+json)
 
-        {
-            "links": {
-                "self": "https://example.com/session"
-            },
-            "data": {
-                "id": "sessionid123",
-                "type": "session"
-            },
-            "related": {
-                "account": {
-                    "links": {
-                        "related": "https://example.com/session/account"
-                    },
-                    "data": {
-                        "id": "abc1234",
-                        "type": "account"
-                    },
-                    "related": {
+            {
+                "links": {
+                    "self": "https://example.com/session"
+                },
+                "data": {
+                    "id": "sessionid123",
+                    "type": "session"
+                },
+                "related": {
+                    "account": {
                         "links": {
-                            "related": "https://example.com/session/account/profile"
+                            "related": "https://example.com/session/account"
                         },
                         "data": {
-                            "id": "profile",
-                            "type": "accountProfile"
-                        }
-                    }
-                }
-            },
-            "included": {
-                "account": {
-                    "links": {
-                        "self": "https://example.com/session/account"
-                    }
-                    "data": {
-                        "id": "abc1234",
-                        "type": "account",
-                        "attributes": {
-                            "fullName": "Jane Doe"
-                        }
-                    },
-                    "related": {
-                        "links": {
-                            "related": "https://example.com/session/account/profile"
+                            "id": "abc1234",
+                            "type": "account"
                         },
-                        "data": {
-                            "id": "profile",
-                            "type": "accountProfile"
-                        }
-                    },
-                    "included": {
-                        "profile": {
+                        "related": {
                             "links": {
-                                "self": "https://example.com/session/account/profile"
+                                "related": "https://example.com/session/account/profile"
                             },
                             "data": {
                                 "id": "profile",
-                                "type": "accountProfile",
-                                "attributes": {
-                                    "fullName": "Jane Doe"
+                                "type": "accountProfile"
+                            }
+                        }
+                    }
+                },
+                "included": {
+                    "account": {
+                        "links": {
+                            "self": "https://example.com/session/account"
+                        },
+                        "data": {
+                            "id": "abc1234",
+                            "type": "account",
+                            "attributes": {
+                                "fullName": "Jane Doe"
+                            }
+                        },
+                        "related": {
+                            "links": {
+                                "related": "https://example.com/session/account/profile"
+                            },
+                            "data": {
+                                "id": "profile",
+                                "type": "accountProfile"
+                            }
+                        },
+                        "included": {
+                            "profile": {
+                                "links": {
+                                    "self": "https://example.com/session/account/profile"
+                                },
+                                "data": {
+                                    "id": "profile",
+                                    "type": "accountProfile",
+                                    "attributes": {
+                                        "fullName": "Jane Doe"
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-        }        
+            }        
 
 
 ### Sign Out [DELETE]
@@ -591,7 +591,7 @@ Admins can fetch and manage all user accounts and their profile properties
 
 + Parameters
     
-    + username: john@example.com (required, string) - uername of account
+    + username: john@example.com (required, string) - username of account
 
 
 ### Fetch [GET]
@@ -639,43 +639,43 @@ Admins can fetch and manage all user accounts and their profile properties
 + Response 200 (application/vnd.api+json)
 
 
-        {   
-            "links": {
-                "self": "https://example.com/accounts/jane@example.com"
-            },
-            "data": {
-                "id": "def678",
-                "type": "account",
-                "attributes": {
-                    "username": "jane@example.com",
-                }
-            },
-            "relationships": {
-                "profile": {
-                    "links": {
-                        "related": "https://example.com/session/account/profile"
-                    },
-                    "data": {
-                        "id": "profile",
-                        "type": "accountProfile"
+            {   
+                "links": {
+                    "self": "https://example.com/accounts/jane@example.com"
+                },
+                "data": {
+                    "id": "def678",
+                    "type": "account",
+                    "attributes": {
+                        "username": "jane@example.com"
                     }
-                }
-            }
-            "included": {
-                "profile": {
-                    "links": {
-                        "self": "https://example.com/session/account/profile"
-                    },
-                    "data": {
-                        "id": "profile",
-                        "type": "accountProfile",
-                        "attributes": {
-                            "fullName": "Jane Doe"
+                },
+                "relationships": {
+                    "profile": {
+                        "links": {
+                            "related": "https://example.com/session/account/profile"
+                        },
+                        "data": {
+                            "id": "profile",
+                            "type": "accountProfile"
                         }
                     }
-                }
-            }            
-        }        
+                },
+                "included": {
+                    "profile": {
+                        "links": {
+                            "self": "https://example.com/session/account/profile"
+                        },
+                        "data": {
+                            "id": "profile",
+                            "type": "accountProfile",
+                            "attributes": {
+                                "fullName": "Jane Doe"
+                            }
+                        }
+                    }
+                }            
+            }        
 
 ### Change [PATCH]
 
