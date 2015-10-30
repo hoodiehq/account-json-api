@@ -26,8 +26,9 @@ current session status.
 
             {
                 "data": {
+                    "type": "session",
                     "attributes": {
-                        "username": "john@example.com",
+                        "username": "john-doe",
                         "password": "secret"
                     }
                 }
@@ -36,44 +37,79 @@ current session status.
 
 + Response 201 (application/vnd.api+json)
 
-        {
-            "links": {
-                "self": "https://example.com/session"
-            },
-            "data": {
-                "id": "sessionid123",
-                "type": "session"
-            },
-            "related": {
-                "account": {
-                    "links": {
-                        "related": "https://example.com/session/account"
-                    },
-                    "data": {
-                        "id": "abc1234",
-                        "type": "account"
+    + Headers
+
+            Location: https://example.com/session
+
+    + Body
+
+            {
+                "links": {
+                    "self": "https://example.com/session"
+                },
+                "data": {
+                    "id": "sessionid123",
+                    "type": "session",
+                    "relationships": {
+                        "account": {
+                            "links": {
+                                "related": "https://example.com/session/account"
+                            },
+                            "data": {
+                                "id": "abc1234",
+                                "type": "account"
+                            }
+                        }
                     }
                 },
-                "profile": {
-                    "links": {
-                        "related": "https://example.com/session/account/profile"
+                "included": [{
+                    "id": "abc1234",
+                    "type": "account",
+                    "attributes": {
+                        "username": "jane-doe"
                     },
-                    "data": {
-                        "id": "profile",
-                        "type": "accountProfile"
+                    "relationships": {
+                        "profile": {
+                            "links": {
+                                "related": "https://example.com/session/account/profile"
+                            },
+                            "data": {
+                                "id": "abc1234-profile",
+                                "type": "accountProfile"
+                            }
+                        }
                     }
-                }
+                }]
             }
-        }
 
 + Response 401 (application/vnd.api+json)
 
         {
-          errors: [{
-            "statusCode": "401",
-            "error": "Unauthorized",
-            "message": "Invalid Credentials"
-          }]
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Invalid Credentials"
+            }]
+        }
+
++ Response 409 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "409",
+                "title": "Conflict",
+                "detail": "Invalid type provided, only supported type is 'session'"
+            }]
+        }
+
++ Response 403 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "403",
+                "title": "Forbidden",
+                "detail": "Authorization header not allowed"
+            }]
         }
 
 ### Check session [GET]
@@ -93,30 +129,59 @@ current session status.
             },
             "data": {
                 "id": "sessionid123",
-                "type": "session"
+                "type": "session",
+                "relationships": {
+                    "account": {
+                        "links": {
+                            "related": "https://example.com/session/account"
+                        },
+                        "data": {
+                            "id": "abc1234",
+                            "type": "account"
+                        }
+                    }
+                }
             },
-            "related": {
-                "account": {
-                    "links": {
-                        "related": "https://example.com/session/account"
-                    },
-                    "data": {
-                        "id": "abc1234",
-                        "type": "account"
-                    },
-                    "related": {
+            "included": [{
+                "id": "abc1234",
+                "type": "account",
+                "attributes": {
+                    "username": "jane-doe"
+                },
+                "relationships": {
+                    "profile": {
                         "links": {
                             "related": "https://example.com/session/account/profile"
                         },
                         "data": {
-                            "id": "profile",
+                            "id": "abc1234-profile",
                             "type": "accountProfile"
                         }
                     }
                 }
-            }
+            }]
         }
 
+
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Invalid Credentials"
+            }]
+        }
+
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Session expired"
+            }]
+        }
 
 ### Check session, include account + profile [GET /session?include=account.profile]
 
@@ -129,15 +194,14 @@ current session status.
 
 + Response 200 (Content-Type: application/vnd.api+json)
 
-            {
-                "links": {
-                    "self": "https://example.com/session"
-                },
-                "data": {
-                    "id": "sessionid123",
-                    "type": "session"
-                },
-                "related": {
+        {
+            "links": {
+                "self": "https://example.com/session"
+            },
+            "data": {
+                "id": "sessionid123",
+                "type": "session",
+                "relationships": {
                     "account": {
                         "links": {
                             "related": "https://example.com/session/account"
@@ -145,57 +209,55 @@ current session status.
                         "data": {
                             "id": "abc1234",
                             "type": "account"
-                        },
-                        "related": {
-                            "links": {
-                                "related": "https://example.com/session/account/profile"
-                            },
-                            "data": {
-                                "id": "profile",
-                                "type": "accountProfile"
-                            }
-                        }
-                    }
-                },
-                "included": {
-                    "account": {
-                        "links": {
-                            "self": "https://example.com/session/account"
-                        },
-                        "data": {
-                            "id": "abc1234",
-                            "type": "account",
-                            "attributes": {
-                                "fullName": "Jane Doe"
-                            }
-                        },
-                        "related": {
-                            "links": {
-                                "related": "https://example.com/session/account/profile"
-                            },
-                            "data": {
-                                "id": "profile",
-                                "type": "accountProfile"
-                            }
-                        },
-                        "included": {
-                            "profile": {
-                                "links": {
-                                    "self": "https://example.com/session/account/profile"
-                                },
-                                "data": {
-                                    "id": "profile",
-                                    "type": "accountProfile",
-                                    "attributes": {
-                                        "fullName": "Jane Doe"
-                                    }
-                                }
-                            }
                         }
                     }
                 }
-            }
+            },
+            "included": [{
+                "id": "abc1234",
+                "type": "account",
+                "attributes": {
+                    "username": "jane-doe"
+                },
+                "relationships": {
+                    "profile": {
+                        "links": {
+                            "related": "https://example.com/session/account/profile"
+                        },
+                        "data": {
+                            "id": "abc1234-profile",
+                            "type": "accountProfile"
+                        }
+                    }
+                }
+            }, {
+                "id": "abc1234-profile",
+                "type": "accountProfile",
+                "attributes": {
+                    "fullName": "Jane Doe"
+                }
+            }]
+        }
 
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Invalid Credentials"
+            }]
+        }
+
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Session expired"
+            }]
+        }
 
 ### Sign Out [DELETE]
 
@@ -208,6 +270,25 @@ current session status.
 
 + Response 204
 
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Invalid Credentials"
+            }]
+        }
+
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Session expired"
+            }]
+        }
 
 ## Account [/session/account]
 
@@ -216,9 +297,9 @@ or set account properties or destroy their accounts.
 
 Destroying an account, and changing account properties
 like username and password, require to pass the user's
-password as `x-password` header.
+bearer token as `Authorization` header.
 
-### Sign Up [PUT /session/account?include=session]
+### Sign Up [PUT /session/account]
 
 + Request (application/vnd.api+json)
 
@@ -230,8 +311,9 @@ password as `x-password` header.
 
             {
                 "data": {
+                    "type": "account",
                     "attributes": {
-                        "username": "john@example.com",
+                        "username": "john-doe",
                         "password": "secret"
                     }
                 }
@@ -239,40 +321,55 @@ password as `x-password` header.
 
 + Response 201 (application/vnd.api+json)
 
-        {
-            "links": {
-                "self": "https://example.com/session/account"
-            },
-            "data" {
-                "id": "abc4567",
-                "type": "account",
-                "attributes": {
-                    "username": "john@example.com"
+    + Headers
+
+            Location: https://example.com/session/account
+
+    + Body
+
+            {
+                "links": {
+                    "self": "https://example.com/session/account"
                 },
-                "relationships": {
-                    "profile": {
-                        "links": {
-                            "related": "https://example.com/session/account/profile"
-                        },
-                        "data": {
-                            "id": "profile",
-                            "type": "accountProfile"
+                "data": {
+                    "id": "abc4567",
+                    "type": "account",
+                    "attributes": {
+                        "username": "john-doe"
+                    },
+                    "relationships": {
+                        "profile": {
+                            "links": {
+                                "related": "https://example.com/session/account/profile"
+                            },
+                            "data": {
+                                "id": "abc4567-profile",
+                                "type": "accountProfile"
+                            }
                         }
                     }
                 }
-            },
-            "included": {
-                "session": {
-                    "links": {
-                        "self": "https://example.com/session"
-                    },
-                    "data": {
-                        "id": "sessionid123"
-                    }
-                }
             }
+
++ Response 409 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "409",
+                "title": "Conflict",
+                "detail": "Invalid type provided, only supported type is 'account'"
+            }]
         }
 
++ Response 403 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "403",
+                "title": "Forbidden",
+                "detail": "Authorization header not allowed"
+            }]
+        }
 
 ### Fetch [GET /session/account]
 
@@ -290,22 +387,43 @@ password as `x-password` header.
                 "self": "https://example.com/session/account"
             },
             "data": {
-                "id": "def678",
+                "id": "abc4567",
+                "type": "account",
                 "attributes": {
-                    "username": "jane@example.com"
+                    "username": "john-doe"
                 },
                 "relationships": {
                     "profile": {
                         "links": {
-                            "related": "https://examples.com/session/account/profile"
+                            "related": "https://example.com/session/account/profile"
                         },
                         "data": {
-                            "id": "profile",
+                            "id": "abc4567-profile",
                             "type": "accountProfile"
                         }
                     }
                 }
             }
+        }
+
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Invalid Credentials"
+            }]
+        }
+
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Session expired"
+            }]
         }
 
 ### Fetch, including profile [GET /session/account?include=profile]
@@ -325,35 +443,30 @@ password as `x-password` header.
             },
             "data": {
                 "id": "def678",
+                "type": "account",
                 "attributes": {
-                    "username": "jane@example.com"
+                    "username": "jane-doe"
                 },
                 "relationships": {
                     "profile": {
                         "links": {
-                            "related": "https://examples.com/session/account/profile"
+                            "related": "https://example.com/session/account/profile"
                         },
                         "data": {
-                            "id": "profile",
+                            "id": "def678-profile",
                             "type": "accountProfile"
                         }
                     }
                 }
             },
-            "included": {
-                "profile": {
-                    "links": {
-                        "self": "https://example.com/session/account/profile"
-                    },
-                    "data": {
-                        "id": "profile",
-                        "type": "accountProfile",
-                        "attributes": {
-                            "fullName": "Jane Doe"
-                        }
-                    }
+            "included": [{
+                "id": "def678-profile",
+                "type": "accountProfile",
+                "attributes": {
+                    "fullName": "Jane Doe"
                 }
-            }
+
+            }]
         }
 
 ### Change [PATCH]
@@ -369,6 +482,8 @@ password as `x-password` header.
 
             {
                 "data": {
+                    "id": "def678",
+                    "type": "account",
                     "attributes": {
                         "password": "newsecret"
                     }
@@ -376,6 +491,36 @@ password as `x-password` header.
             }
 
 + Response 204
+
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Invalid Credentials"
+            }]
+        }
+
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Session expired"
+            }]
+        }
+
++ Response 409 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "409",
+                "title": "Conflict",
+                "detail": "'type' and 'id' provided don't match any existing document"
+            }]
+        }
 
 ### Close [DELETE]
 
@@ -388,10 +533,33 @@ password as `x-password` header.
 
 + Response 204
 
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Invalid Credentials"
+            }]
+        }
+
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Session expired"
+            }]
+        }
+
 
 ## Account Profile [/session/account/profile]
 
 All custom user data is stored in the account profile.
+
+Every account has an associated profile, by default, an empty one
+is created when creating the account.
 
 ### Fetch user account profile [GET]
 
@@ -405,54 +573,37 @@ All custom user data is stored in the account profile.
 + Response 200 (application/vnd.api+json)
 
         {
-          "links": {
+            "links": {
                 "self": "https://example.com/session/account/profile"
-          },
-          "data": {
-            "id": "profile",
-            "type": "accountProfile",
-            "attributes": {
-                "fullName": "Jane Doe"
+            },
+            "data": {
+                "id": "abc123-profile",
+                "type": "accountProfile",
+                "attributes": {
+                    "fullName": "Jane Doe"
+                }
             }
-          }
         }
 
-### Create user account profile [PUT]
++ Response 401 (application/vnd.api+json)
 
-+ Request (application/vnd.api+json)
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Invalid Credentials"
+            }]
+        }
 
-    + Headers
++ Response 401 (application/vnd.api+json)
 
-            Accept: application/vnd.api+json
-            Authorization: Bearer sessionid123
-
-    + Body
-
-            {
-                "data": {
-                    "id": "profile",
-                    "type": "accountProfile",
-                    "attributes": {
-                        "property": "value"
-                    }
-                }
-            }
-
-+ Response 200
-
-            {
-                "links": {
-                    "self": "https://example.com/session/account/profile"
-                },
-                "data": {
-                    "id": "profile",
-                    "type": "accountProfile",
-                    "attributes": {
-                        "property": "value"
-                    }
-                }
-            }
-
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Session expired"
+            }]
+        }
 
 ### Update user account profile [PATCH]
 
@@ -466,7 +617,9 @@ All custom user data is stored in the account profile.
     + Body
 
             {
-              "data": {
+                "data": {
+                    "id": "abc123-profile",
+                    "type": "profile",
                     "attributes": {
                         "property": "new value"
                     }
@@ -474,6 +627,36 @@ All custom user data is stored in the account profile.
             }
 
 + Response 204
+
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Invalid Credentials"
+            }]
+        }
+
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Session expired"
+            }]
+        }
+
++ Response 409 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "409",
+                "title": "Conflict",
+                "detail": "'type' and 'id' provided don't match any existing document"
+            }]
+        }
 
 ## Group Admins
 
@@ -495,8 +678,9 @@ Admins can fetch and manage all user accounts and their profile properties
 
             {
                 "data": {
+                    "type": "account",
                     "attributes": {
-                        "username": "jane@example.com",
+                        "username": "jane-doe",
                         "password": "secret"
                     }
                 }
@@ -504,27 +688,54 @@ Admins can fetch and manage all user accounts and their profile properties
 
 + Response 201 (application/vnd.api+json)
 
-        {
-            "links": {
-                "self": "https://example.com/accounts/abc4567"
-            },
-            "data": {
-                "id": "abc4567",
-                "attributes": {
-                    "username": "jane@example.com"
+    + Headers
+
+            Location: https://example.com/accounts/jane-doe
+
+    + Body
+
+            {
+                "links": {
+                    "self": "https://example.com/accounts/jane-doe"
                 },
-                "relationships": {
-                    "profile": {
-                        "links": {
-                            "related": "https://examples.com/accounts/abc4567/profile"
-                        },
-                        "data": {
-                            "id": "profile",
-                            "type": "accountProfile",
+                "data": {
+                    "id": "abc4567",
+                    "type": "account",
+                    "attributes": {
+                        "username": "jane-doe"
+                    },
+                    "relationships": {
+                        "profile": {
+                            "links": {
+                                "related": "https://example.com/accounts/jane-doe/profile"
+                            },
+                            "data": {
+                                "id": "abc4567-profile",
+                                "type": "accountProfile",
+                            }
                         }
                     }
                 }
             }
+
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Invalid Credentials"
+            }]
+        }
+
++ Response 409 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "409",
+                "title": "Conflict",
+                "detail": "Invalid type provided, only supported type is 'session'"
+            }]
         }
 
 ### List all [GET]
@@ -539,29 +750,29 @@ Admins can fetch and manage all user accounts and their profile properties
 + Response 200 (application/vnd.api+json)
 
         {
-          "links": {
-            "self": "https://example.com/accounts",
-            "first": "https://example.com/accounts",
-            "last": "https://example.com/accounts?page=2",
-            "next": "https://example.com/accounts?page=2"
-          },
-          "data": [
+            "links": {
+                "self": "https://example.com/accounts",
+                "first": "https://example.com/accounts",
+                "last": "https://example.com/accounts?page=2",
+                "next": "https://example.com/accounts?page=2"
+            },
+            "data": [
                 {
                     "id": "abc4567",
-                    "type": "accounts",
+                    "type": "account",
                     "links": {
-                        "self": "https://example.com/accounts/abc4567"
+                        "self": "https://example.com/accounts/jane-doe"
                     },
                     "attributes": {
-                        "username": "jane@example.com"
+                        "username": "jane-doe"
                     },
                     "relationships": {
                         "profile": {
                             "links": {
-                                "realated": "https://example.com/accounts/jane@example.com/profile"
+                                "related": "https://example.com/accounts/jane-doe/profile"
                             },
                             "data": {
-                                "id": "profile",
+                                "id": "abc4567-profile",
                                 "type": "accountProfile"
                             }
                         }
@@ -569,20 +780,20 @@ Admins can fetch and manage all user accounts and their profile properties
                 },
                 {
                     "id": "def678",
-                    "type": "accounts",
+                    "type": "account",
                     "links": {
-                        "self": "https://example.com/accounts/def678"
+                        "self": "https://example.com/accounts/john-doe"
                     },
                     "attributes": {
-                        "username": "john@example.com"
+                        "username": "john-doe"
                     },
                     "relationships": {
                         "profile": {
                             "links": {
-                                "related": "https://example.com/accounts/john@example.com/profile"
+                                "related": "https://example.com/accounts/john-doe/profile"
                             },
                             "data": {
-                                "id": "profile",
+                                "id": "def678-profile",
                                 "type": "accountProfile"
                             }
                         }
@@ -591,12 +802,21 @@ Admins can fetch and manage all user accounts and their profile properties
             ]
         }
 
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Invalid Credentials"
+            }]
+        }
 
 ## Account [/accounts/{username}]
 
 + Parameters
 
-    + username: john@example.com (required, string) - username of account
+    + username: john-doe (required, string) - username of account
 
 
 ### Fetch [GET]
@@ -613,23 +833,36 @@ Admins can fetch and manage all user accounts and their profile properties
 
         {
             "links": {
-                "self": "https://example.com/accounts/jane@example.com"
+                "self": "https://example.com/accounts/jane-doe"
             },
             "data": {
                 "id": "def678",
                 "type": "account",
                 "attributes": {
-                    "username": "jane@example.com",
+                    "username": "jane-doe",
                 }
             },
             "relationships": {
                 "profile": {
+                    "links": {
+                        "related": "https://example.com/accounts/jane-doe/profile"
+                    },
                     "data": {
-                        "id": "profile",
+                        "id": "def678-profile",
                         "type": "accountProfile"
                     }
                 }
             }
+        }
+
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Invalid Credentials"
+            }]
         }
 
 ### Fetch, include profile [GET /accounts/{username}?include=profile]
@@ -646,41 +879,44 @@ Admins can fetch and manage all user accounts and their profile properties
 
             {
                 "links": {
-                    "self": "https://example.com/accounts/jane@example.com"
+                    "self": "https://example.com/accounts/jane-doe"
                 },
                 "data": {
                     "id": "def678",
                     "type": "account",
                     "attributes": {
-                        "username": "jane@example.com"
+                        "username": "jane-doe"
                     }
                 },
                 "relationships": {
                     "profile": {
                         "links": {
-                            "related": "https://example.com/session/account/profile"
+                            "related": "https://example.com/accounts/jane-doe/profile"
                         },
                         "data": {
-                            "id": "profile",
+                            "id": "def678-profile",
                             "type": "accountProfile"
                         }
                     }
                 },
-                "included": {
-                    "profile": {
-                        "links": {
-                            "self": "https://example.com/session/account/profile"
-                        },
-                        "data": {
-                            "id": "profile",
-                            "type": "accountProfile",
-                            "attributes": {
-                                "fullName": "Jane Doe"
-                            }
-                        }
+                "included": [{
+                    "id": "def678-profile",
+                    "type": "accountProfile",
+                    "attributes": {
+                        "fullName": "Jane Doe"
                     }
-                }
+                }]
             }
+
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Invalid Credentials"
+            }]
+        }
 
 ### Change [PATCH]
 
@@ -707,7 +943,25 @@ Admins can fetch and manage all user accounts and their profile properties
 
 + Response 204
 
++ Response 401 (application/vnd.api+json)
 
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Invalid Credentials"
+            }]
+        }
+
++ Response 409 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "409",
+                "title": "Conflict",
+                "detail": "'type' and 'id' provided don't match any existing document"
+            }]
+        }
 
 ### Delete [DELETE]
 
@@ -719,6 +973,16 @@ Admins can fetch and manage all user accounts and their profile properties
             Authorization: Bearer sessionid123
 
 + Response 204
+
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Invalid credentials"
+            }]
+        }
 
 ## Account Profile [/accounts/{username}/profile]
 
@@ -736,54 +1000,27 @@ All custom user data is stored in the account profile.
 + Response 200 (application/vnd.api+json)
 
         {
-          "links": {
-                "self": "https://example.com/accounts/jane@example.com/profile"
-          },
-          "data": {
-            "id": "profile",
-            "type": "accountProfile",
-            "attributes": {
-                "fullName": "Jane Doe"
+            "links": {
+                "self": "https://example.com/accounts/jane-doe/profile"
+            },
+            "data": {
+                "id": "abcd123-profile",
+                "type": "accountProfile",
+                "attributes": {
+                    "fullName": "Jane Doe"
+                }
             }
-          }
         }
 
-### Create user account profile [PUT]
++ Response 401 (application/vnd.api+json)
 
-+ Request (application/vnd.api+json)
-
-    + Headers
-
-            Accept: application/vnd.api+json
-            Authorization: Bearer sessionid123
-
-    + Body
-
-            {
-                "data": {
-                    "id": "profile",
-                    "type": "accountProfile",
-                    "attributes": {
-                        "property": "value"
-                    }
-                }
-            }
-
-+ Response 200
-
-            {
-                "links": {
-                    "self": "https://example.com/accounts/jane@example.com/profile"
-                },
-                "data": {
-                    "id": "profile",
-                    "type": "accountProfile",
-                    "attributes": {
-                        "property": "value"
-                    }
-                }
-            }
-
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Invalid credentials"
+            }]
+        }
 
 ### Update user account profile [PATCH]
 
@@ -797,7 +1034,9 @@ All custom user data is stored in the account profile.
     + Body
 
             {
-              "data": {
+                "data": {
+                    "id": "abcd123-profile",
+                    "type": "profile",
                     "attributes": {
                         "property": "new value"
                     }
@@ -806,12 +1045,31 @@ All custom user data is stored in the account profile.
 
 + Response 204
 
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Invalid Credentials"
+            }]
+        }
+
++ Response 409 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "409",
+                "title": "Conflict",
+                "detail": "'type' and 'id' provided don't match any existing document"
+            }]
+        }
 
 ## requests [/requests]
 
 `GET` is restricted to admins.
 
-### LIST [GET]
+### List [GET]
 
 
 + Request (application/vnd.api+json)
@@ -821,7 +1079,7 @@ All custom user data is stored in the account profile.
             Accept: application/vnd.api+json
             Authorization: Bearer sessionid123
 
-+ Response 201 (application/vnd.api+json)
++ Response 200 (application/vnd.api+json)
 
         {
             "links": {
@@ -832,11 +1090,11 @@ All custom user data is stored in the account profile.
             },
             "data": [
                 {
+                    "id": "1234",
+                    "type": "request",
                     "links": {
                         "self": "https://example.com/requests/1234"
                     },
-                    "id": "1234",
-                    "type": "requests",
                     "attributes": {
                         "type": "passwordreset",
                         "contact": "john@example.com",
@@ -844,11 +1102,11 @@ All custom user data is stored in the account profile.
                     }
                 },
                 {
+                    "id": "2345",
+                    "type": "request",
                     "links": {
                       "self": "https://example.com/requests/2345"
                     },
-                    "id": "2345",
-                    "type": "requests",
                     "attributes": {
                         "type": "usernamereminder",
                         "contact": "jane@example.com",
@@ -856,6 +1114,16 @@ All custom user data is stored in the account profile.
                     }
                 }
             ]
+        }
+
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Invalid Credentials"
+            }]
         }
 
 ### CREATE [POST]
@@ -869,31 +1137,57 @@ All custom user data is stored in the account profile.
     + Body
 
             {
-              "data": {
-                "type": "passwordreset",
-                "attributes": {
-                  "contact": "john@example.com"
+                "data": {
+                    "type": "request",
+                    "attributes": {
+                        "type": "passwordreset",
+                        "contact": "john@example.com"
+                    }
                 }
-              }
             }
 
 + Response 201 (application/vnd.api+json)
 
-        {
-          "links": {
-            "self": "https://example.com/requests/1234"
-          },
-          "data": {
-            "id": "1234",
-            "type": "passwordreset",
-            "attributes": {
-              "contact": "john@example.com",
-              "expires": "2015-07-20T15:00:00-04:00"
+    + Headers
+
+            Location: https://example.com/requests/1234
+
+    + Body
+
+            {
+                "links": {
+                    "self": "https://example.com/requests/1234"
+                },
+                "data": {
+                    "id": "1234",
+                    "type": "request",
+                    "attributes": {
+                        "type": "passwordreset",
+                        "contact": "john@example.com",
+                        "expires": "2015-07-20T15:00:00-04:00"
+                    }
+                }
             }
-          }
+
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Invalid Credentials"
+            }]
         }
 
++ Response 409 (application/vnd.api+json)
 
+        {
+            errors: [{
+                "status": "409",
+                "title": "Conflict",
+                "detail": "Invalid type provided, only supported type is 'request'"
+            }]
+        }
 
 ## Request [/requests/{id}]
 
@@ -906,23 +1200,46 @@ like an error during password reset delivery.
 
 ### Fetch request by  id [GET]
 
++ Request (application/vnd.api+json)
+
+    + Headers
+
+            Accept: application/vnd.api+json
+
 + Response 200 (application/vnd.api+json)
 
         {
-          "links": {
-            "self": "https://example.com/requests/1234"
-          },
-          "data": {
-            "id": "1234",
-            "type": "requests",
-            "attributes": {
-            "type": "passwordreset",
-              "contact": "john@example.com",
-              "expires": "2015-07-20T15:00:00-04:00"
+            "links": {
+                "self": "https://example.com/requests/1234"
+            },
+            "data": {
+                "id": "1234",
+                "type": "request",
+                "attributes": {
+                    "type": "passwordreset",
+                    "contact": "john@example.com",
+                    "expires": "2015-07-20T15:00:00-04:00"
+                }
             }
-          }
         }
 
 ### Delete request [DELETE]
 
++ Request (application/vnd.api+json)
+
+    + Headers
+
+            Accept: application/vnd.api+json
+            Authorization: Bearer sessionid123
+
 + Response 204
+
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Invalid Credentials"
+            }]
+        }
