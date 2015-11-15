@@ -3,7 +3,7 @@
 > RESTful JSON API-blueprint for all things user accounts
 
 [![NPM version](https://badge.fury.io/js/account-rest-api.svg)](https://www.npmjs.com/package/account-rest-api)
-[![Build Status](https://travis-ci.org/gr2m/account-rest-api.svg?branch=master)](https://travis-ci.org/gr2m/account-rest-api)
+[![Build Status](https://travis-ci.org/hoodiehq/account-rest-api.svg?branch=master)](https://travis-ci.org/hoodiehq/account-rest-api)
 
 This is a [JSON API v1.0](http://jsonapi.org/format/) compliant implementation.
 
