@@ -293,7 +293,12 @@ current session status.
 ## Account [/session/account]
 
 The User account resource allows users to sign up, get
-or set account properties or destroy their accounts.
+account properties or destroy their accounts.
+
+Once created, accounts properties cannot be changed by users themselves
+directly. Account updates must always go trough the `/requests` API, where
+apps can define custom workflows, e.g. require the current password to change
+the username.
 
 ### Sign Up [PUT /session/account]
 
@@ -462,59 +467,6 @@ or set account properties or destroy their accounts.
                     "fullName": "Jane Doe"
                 }
 
-            }]
-        }
-
-### Change [PATCH]
-
-+ Request (application/vnd.api+json)
-
-    + Headers
-
-            Accept: application/vnd.api+json
-            Authorization: Bearer sessionid123
-
-    + Body
-
-            {
-                "data": {
-                    "id": "def678",
-                    "type": "account",
-                    "attributes": {
-                        "password": "newsecret"
-                    }
-                }
-            }
-
-+ Response 204
-
-+ Response 401 (application/vnd.api+json)
-
-        {
-            errors: [{
-                "status": "401",
-                "title": "Unauthorized",
-                "detail": "Invalid Credentials"
-            }]
-        }
-
-+ Response 401 (application/vnd.api+json)
-
-        {
-            errors: [{
-                "status": "401",
-                "title": "Unauthorized",
-                "detail": "Session expired"
-            }]
-        }
-
-+ Response 409 (application/vnd.api+json)
-
-        {
-            errors: [{
-                "status": "409",
-                "title": "Conflict",
-                "detail": "'type' and 'id' provided don't match any existing document"
             }]
         }
 
