@@ -114,14 +114,14 @@ current session status.
 
 ### Check session [GET]
 
-+ Request (Content-Type: application/vnd.api+json)
++ Request
 
     + Headers
 
             Accept: application/vnd.api+json
             Authorization: Bearer sessionid123
 
-+ Response 200 (Content-Type: application/vnd.api+json)
++ Response 200 (application/vnd.api+json)
 
         {
             "links": {
@@ -185,14 +185,14 @@ current session status.
 
 ### Check session, include account + profile [GET /session?include=account.profile]
 
-+ Request (Content-Type: application/vnd.api+json)
++ Request
 
     + Headers
 
             Accept: application/vnd.api+json
             Authorization: Bearer sessionid123
 
-+ Response 200 (Content-Type: application/vnd.api+json)
++ Response 200 (application/vnd.api+json)
 
         {
             "links": {
@@ -261,7 +261,7 @@ current session status.
 
 ### Sign Out [DELETE]
 
-+ Request (application/vnd.api+json)
++ Request
 
     + Headers
 
@@ -520,7 +520,7 @@ or set account properties or destroy their accounts.
 
 ### Close [DELETE]
 
-+ Request (application/vnd.api+json)
++ Request
 
     + Headers
 
@@ -559,7 +559,7 @@ is created when creating the account.
 
 ### Fetch user account profile [GET]
 
-+ Request (application/vnd.api+json)
++ Request
 
     + Headers
 
@@ -985,7 +985,7 @@ All custom user data is stored in the account profile.
 
 ### Fetch user account profile [GET]
 
-+ Request (application/vnd.api+json)
++ Request
 
     + Headers
 
@@ -1067,7 +1067,7 @@ All custom user data is stored in the account profile.
 ### List [GET]
 
 
-+ Request (application/vnd.api+json)
++ Request
 
     + Headers
 
@@ -1195,7 +1195,7 @@ like an error during password reset delivery.
 
 ### Fetch request by  id [GET]
 
-+ Request (application/vnd.api+json)
++ Request
 
     + Headers
 
@@ -1220,7 +1220,7 @@ like an error during password reset delivery.
 
 ### Delete request [DELETE]
 
-+ Request (application/vnd.api+json)
++ Request
 
     + Headers
 
