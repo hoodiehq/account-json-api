@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "exit 0",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "summary": "scripts/summary.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,8 @@
   },
   "homepage": "https://github.com/hoodiehq/account-json-api#readme",
   "devDependencies": {
+    "lodash": "^3.10.1",
+    "protagonist": "^1.2.0",
     "semantic-release": "^6.0.3"
   }
 }
