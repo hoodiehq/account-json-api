@@ -37,7 +37,7 @@ GET    /accounts/{username}/profile
 PATCH  /accounts/{username}/profile
 ```
 
-Find the full spec at docs.accountjsonapi.apiary.io
+Find the full spec at http://docs.accountjsonapi.apiary.io
 
 ## Example
 
