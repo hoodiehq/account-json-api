@@ -75,7 +75,7 @@ current session status.
                             },
                             "data": {
                                 "id": "abc1234-profile",
-                                "type": "accountProfile"
+                                "type": "profile"
                             }
                         }
                     }
@@ -155,7 +155,7 @@ current session status.
                         },
                         "data": {
                             "id": "abc1234-profile",
-                            "type": "accountProfile"
+                            "type": "profile"
                         }
                     }
                 }
@@ -226,13 +226,13 @@ current session status.
                         },
                         "data": {
                             "id": "abc1234-profile",
-                            "type": "accountProfile"
+                            "type": "profile"
                         }
                     }
                 }
             }, {
                 "id": "abc1234-profile",
-                "type": "accountProfile",
+                "type": "profile",
                 "attributes": {
                     "fullName": "Jane Doe"
                 }
@@ -340,7 +340,7 @@ or set account properties or destroy their accounts.
                             },
                             "data": {
                                 "id": "abc4567-profile",
-                                "type": "accountProfile"
+                                "type": "profile"
                             }
                         }
                     }
@@ -395,7 +395,7 @@ or set account properties or destroy their accounts.
                         },
                         "data": {
                             "id": "abc4567-profile",
-                            "type": "accountProfile"
+                            "type": "profile"
                         }
                     }
                 }
@@ -450,14 +450,14 @@ or set account properties or destroy their accounts.
                         },
                         "data": {
                             "id": "def678-profile",
-                            "type": "accountProfile"
+                            "type": "profile"
                         }
                     }
                 }
             },
             "included": [{
                 "id": "def678-profile",
-                "type": "accountProfile",
+                "type": "profile",
                 "attributes": {
                     "fullName": "Jane Doe"
                 }
@@ -574,7 +574,7 @@ is created when creating the account.
             },
             "data": {
                 "id": "abc123-profile",
-                "type": "accountProfile",
+                "type": "profile",
                 "attributes": {
                     "fullName": "Jane Doe"
                 }
@@ -685,13 +685,13 @@ Admins can fetch and manage all user accounts and their profile properties
 
     + Headers
 
-            Location: https://example.com/accounts/jane-doe
+            Location: https://example.com/accounts/abc4567
 
     + Body
 
             {
                 "links": {
-                    "self": "https://example.com/accounts/jane-doe"
+                    "self": "https://example.com/accounts/abc4567"
                 },
                 "data": {
                     "id": "abc4567",
@@ -702,11 +702,11 @@ Admins can fetch and manage all user accounts and their profile properties
                     "relationships": {
                         "profile": {
                             "links": {
-                                "related": "https://example.com/accounts/jane-doe/profile"
+                                "related": "https://example.com/accounts/abc4567/profile"
                             },
                             "data": {
                                 "id": "abc4567-profile",
-                                "type": "accountProfile",
+                                "type": "profile",
                             }
                         }
                     }
@@ -756,7 +756,7 @@ Admins can fetch and manage all user accounts and their profile properties
                     "id": "abc4567",
                     "type": "account",
                     "links": {
-                        "self": "https://example.com/accounts/jane-doe"
+                        "self": "https://example.com/accounts/abc4567"
                     },
                     "attributes": {
                         "username": "jane-doe"
@@ -764,11 +764,11 @@ Admins can fetch and manage all user accounts and their profile properties
                     "relationships": {
                         "profile": {
                             "links": {
-                                "related": "https://example.com/accounts/jane-doe/profile"
+                                "related": "https://example.com/accounts/abc4567/profile"
                             },
                             "data": {
                                 "id": "abc4567-profile",
-                                "type": "accountProfile"
+                                "type": "profile"
                             }
                         }
                     }
@@ -777,7 +777,7 @@ Admins can fetch and manage all user accounts and their profile properties
                     "id": "def678",
                     "type": "account",
                     "links": {
-                        "self": "https://example.com/accounts/john-doe"
+                        "self": "https://example.com/accounts/def678"
                     },
                     "attributes": {
                         "username": "john-doe"
@@ -785,11 +785,11 @@ Admins can fetch and manage all user accounts and their profile properties
                     "relationships": {
                         "profile": {
                             "links": {
-                                "related": "https://example.com/accounts/john-doe/profile"
+                                "related": "https://example.com/accounts/def678/profile"
                             },
                             "data": {
                                 "id": "def678-profile",
-                                "type": "accountProfile"
+                                "type": "profile"
                             }
                         }
                     }
@@ -807,11 +807,11 @@ Admins can fetch and manage all user accounts and their profile properties
             }]
         }
 
-## Account [/accounts/{username}]
+## Account [/accounts/{id}]
 
 + Parameters
 
-    + username: john-doe (required, string) - username of account
+    + id: abc4567 (required, string) - id of account
 
 
 ### Fetch [GET]
@@ -828,7 +828,7 @@ Admins can fetch and manage all user accounts and their profile properties
 
         {
             "links": {
-                "self": "https://example.com/accounts/jane-doe"
+                "self": "https://example.com/accounts/def678"
             },
             "data": {
                 "id": "def678",
@@ -840,11 +840,11 @@ Admins can fetch and manage all user accounts and their profile properties
             "relationships": {
                 "profile": {
                     "links": {
-                        "related": "https://example.com/accounts/jane-doe/profile"
+                        "related": "https://example.com/accounts/def678/profile"
                     },
                     "data": {
                         "id": "def678-profile",
-                        "type": "accountProfile"
+                        "type": "profile"
                     }
                 }
             }
@@ -860,7 +860,7 @@ Admins can fetch and manage all user accounts and their profile properties
             }]
         }
 
-### Fetch, include profile [GET /accounts/{username}?include=profile]
+### Fetch, include profile [GET /accounts/{id}?include=profile]
 
 + Request
 
@@ -874,7 +874,7 @@ Admins can fetch and manage all user accounts and their profile properties
 
             {
                 "links": {
-                    "self": "https://example.com/accounts/jane-doe"
+                    "self": "https://example.com/accounts/def678"
                 },
                 "data": {
                     "id": "def678",
@@ -886,17 +886,17 @@ Admins can fetch and manage all user accounts and their profile properties
                 "relationships": {
                     "profile": {
                         "links": {
-                            "related": "https://example.com/accounts/jane-doe/profile"
+                            "related": "https://example.com/accounts/def678/profile"
                         },
                         "data": {
                             "id": "def678-profile",
-                            "type": "accountProfile"
+                            "type": "profile"
                         }
                     }
                 },
                 "included": [{
                     "id": "def678-profile",
-                    "type": "accountProfile",
+                    "type": "profile",
                     "attributes": {
                         "fullName": "Jane Doe"
                     }
@@ -979,7 +979,11 @@ Admins can fetch and manage all user accounts and their profile properties
             }]
         }
 
-## Account Profile [/accounts/{username}/profile]
+## Account Profile [/accounts/{id}/profile]
+
++ Parameters
+
+    + id: abc4567 (required, string) - id of account
 
 All custom user data is stored in the account profile.
 
@@ -996,11 +1000,11 @@ All custom user data is stored in the account profile.
 
         {
             "links": {
-                "self": "https://example.com/accounts/jane-doe/profile"
+                "self": "https://example.com/accounts/abcd123/profile"
             },
             "data": {
                 "id": "abcd123-profile",
-                "type": "accountProfile",
+                "type": "profile",
                 "attributes": {
                     "fullName": "Jane Doe"
                 }
