@@ -7,7 +7,8 @@ An implementation of a [JSON-API v1](http://jsonapi.org/) RESTful interface for 
 Send your pull-requests to https://github.com/hoodiehq/account-json-api
 
 
-## Group User
+## Group Current User
+
 
 ## Session [/session]
 
@@ -33,7 +34,6 @@ current session status.
                     }
                 }
             }
-
 
 + Response 201 (application/vnd.api+json)
 
@@ -75,7 +75,7 @@ current session status.
                             },
                             "data": {
                                 "id": "abc1234-profile",
-                                "type": "accountProfile"
+                                "type": "profile"
                             }
                         }
                     }
@@ -155,13 +155,12 @@ current session status.
                         },
                         "data": {
                             "id": "abc1234-profile",
-                            "type": "accountProfile"
+                            "type": "profile"
                         }
                     }
                 }
             }]
         }
-
 
 + Response 401 (application/vnd.api+json)
 
@@ -226,13 +225,13 @@ current session status.
                         },
                         "data": {
                             "id": "abc1234-profile",
-                            "type": "accountProfile"
+                            "type": "profile"
                         }
                     }
                 }
             }, {
                 "id": "abc1234-profile",
-                "type": "accountProfile",
+                "type": "profile",
                 "attributes": {
                     "fullName": "Jane Doe"
                 }
@@ -290,6 +289,7 @@ current session status.
             }]
         }
 
+
 ## Account [/session/account]
 
 The User account resource allows users to sign up, get
@@ -340,7 +340,7 @@ or set account properties or destroy their accounts.
                             },
                             "data": {
                                 "id": "abc4567-profile",
-                                "type": "accountProfile"
+                                "type": "profile"
                             }
                         }
                     }
@@ -395,7 +395,7 @@ or set account properties or destroy their accounts.
                         },
                         "data": {
                             "id": "abc4567-profile",
-                            "type": "accountProfile"
+                            "type": "profile"
                         }
                     }
                 }
@@ -450,14 +450,14 @@ or set account properties or destroy their accounts.
                         },
                         "data": {
                             "id": "def678-profile",
-                            "type": "accountProfile"
+                            "type": "profile"
                         }
                     }
                 }
             },
             "included": [{
                 "id": "def678-profile",
-                "type": "accountProfile",
+                "type": "profile",
                 "attributes": {
                     "fullName": "Jane Doe"
                 }
@@ -574,7 +574,7 @@ is created when creating the account.
             },
             "data": {
                 "id": "abc123-profile",
-                "type": "accountProfile",
+                "type": "profile",
                 "attributes": {
                     "fullName": "Jane Doe"
                 }
@@ -654,7 +654,9 @@ is created when creating the account.
             }]
         }
 
+
 ## Group Admins
+
 
 ## Accounts [/accounts]
 
@@ -706,7 +708,7 @@ Admins can fetch and manage all user accounts and their profile properties
                             },
                             "data": {
                                 "id": "abc4567-profile",
-                                "type": "accountProfile",
+                                "type": "profile",
                             }
                         }
                     }
@@ -768,7 +770,7 @@ Admins can fetch and manage all user accounts and their profile properties
                             },
                             "data": {
                                 "id": "abc4567-profile",
-                                "type": "accountProfile"
+                                "type": "profile"
                             }
                         }
                     }
@@ -789,7 +791,7 @@ Admins can fetch and manage all user accounts and their profile properties
                             },
                             "data": {
                                 "id": "def678-profile",
-                                "type": "accountProfile"
+                                "type": "profile"
                             }
                         }
                     }
@@ -807,12 +809,12 @@ Admins can fetch and manage all user accounts and their profile properties
             }]
         }
 
+
 ## Account [/accounts/{username}]
 
 + Parameters
 
     + username: john-doe (required, string) - username of account
-
 
 ### Fetch [GET]
 
@@ -824,7 +826,6 @@ Admins can fetch and manage all user accounts and their profile properties
             Authorization: Bearer sessionid123
 
 + Response 200 (application/vnd.api+json)
-
 
         {
             "links": {
@@ -844,7 +845,7 @@ Admins can fetch and manage all user accounts and their profile properties
                     },
                     "data": {
                         "id": "def678-profile",
-                        "type": "accountProfile"
+                        "type": "profile"
                     }
                 }
             }
@@ -871,7 +872,6 @@ Admins can fetch and manage all user accounts and their profile properties
 
 + Response 200 (application/vnd.api+json)
 
-
             {
                 "links": {
                     "self": "https://example.com/accounts/jane-doe"
@@ -890,13 +890,13 @@ Admins can fetch and manage all user accounts and their profile properties
                         },
                         "data": {
                             "id": "def678-profile",
-                            "type": "accountProfile"
+                            "type": "profile"
                         }
                     }
                 },
                 "included": [{
                     "id": "def678-profile",
-                    "type": "accountProfile",
+                    "type": "profile",
                     "attributes": {
                         "fullName": "Jane Doe"
                     }
@@ -934,7 +934,6 @@ Admins can fetch and manage all user accounts and their profile properties
                     }
                 }
             }
-
 
 + Response 204
 
@@ -979,6 +978,7 @@ Admins can fetch and manage all user accounts and their profile properties
             }]
         }
 
+
 ## Account Profile [/accounts/{username}/profile]
 
 All custom user data is stored in the account profile.
@@ -1000,7 +1000,7 @@ All custom user data is stored in the account profile.
             },
             "data": {
                 "id": "abcd123-profile",
-                "type": "accountProfile",
+                "type": "profile",
                 "attributes": {
                     "fullName": "Jane Doe"
                 }
@@ -1060,12 +1060,12 @@ All custom user data is stored in the account profile.
             }]
         }
 
+
 ## requests [/requests]
 
 `GET` is restricted to admins.
 
 ### List [GET]
-
 
 + Request
 
@@ -1183,6 +1183,7 @@ All custom user data is stored in the account profile.
                 "detail": "Invalid type provided, only supported type is 'request'"
             }]
         }
+
 
 ## Request [/requests/{id}]
 
