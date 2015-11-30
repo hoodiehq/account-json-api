@@ -550,14 +550,14 @@ or set account properties or destroy their accounts.
         }
 
 
-## Account Profile [/session/account/profile]
+## Profile [/session/account/profile]
 
-All custom user data is stored in the account profile.
+All custom user data is stored in the profile.
 
 Every account has an associated profile, by default, an empty one
 is created when creating the account.
 
-### Fetch user account profile [GET]
+### Fetch user profile [GET]
 
 + Request
 
@@ -601,7 +601,7 @@ is created when creating the account.
             }]
         }
 
-### Update user account profile [PATCH]
+### Update user profile [PATCH]
 
 + Request (application/vnd.api+json)
 
@@ -979,15 +979,15 @@ Admins can fetch and manage all user accounts and their profile properties
         }
 
 
-## Account Profile [/accounts/{id}/profile]
+## Profile [/accounts/{id}/profile]
 
-All custom user data is stored in the account profile.
+All custom user data is stored in the profile.
 
 + Parameters
 
     + id: abc4567 (required, string) - id of account
 
-### Fetch user account profile [GET]
+### Fetch user profile [GET]
 
 + Request
 
@@ -1021,7 +1021,7 @@ All custom user data is stored in the account profile.
             }]
         }
 
-### Update user account profile [PATCH]
+### Update user profile [PATCH]
 
 + Request (application/vnd.api+json)
 
