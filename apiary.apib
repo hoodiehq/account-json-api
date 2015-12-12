@@ -785,6 +785,15 @@ A user can only see own requests. An admin can see all requests across accounts.
             }]
         }
 
++ Response 403 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "403",
+                "title": "Forbidden",
+                "detail": "Unknown request type"
+            }]
+        }
 
 ## Request [/requests/{id}]
 
