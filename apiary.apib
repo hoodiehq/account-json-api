@@ -665,6 +665,7 @@ is created when creating the account.
 Requests can be used for things like account confirmation, password resets
 or account ugrades, which require app-specific workflows.
 
+Authentication might or might not be needed, depending on the type of request.
 
 ## Request Collection [/requests]
 
@@ -743,6 +744,7 @@ A user can only see own requests. An admin can see all requests across accounts.
     + Headers
 
             Accept: application/vnd.api+json
+            Authorization: Bearer sessionid123
 
     + Body
 
@@ -821,9 +823,11 @@ A user can only see own requests. An admin can see all requests across accounts.
 
 ## Request [/requests/{id}]
 
-`DELETE` is restricted to admins. `GET` makes sense for users to check
-for errors that might have occured after creating a request,
-like an error during password reset delivery.
+`DELETE` always requires authentication and is restricted to admins.
+
+`GET` makes sense for users to check for errors that might have occured after
+creating a request, like an error during password reset delivery. It might or
+might not require authentication, depending on the type of request.
 
 + Parameters
     + id: 1234 (required, string) - request id
@@ -835,6 +839,7 @@ like an error during password reset delivery.
     + Headers
 
             Accept: application/vnd.api+json
+            Authorization: Bearer sessionid123
 
 + Response 200 (application/vnd.api+json)
 
