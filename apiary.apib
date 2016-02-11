@@ -15,6 +15,12 @@ Send your pull-requests to https://github.com/hoodiehq/account-json-api
 The session resource allows users to sign in, sign out and to check their
 current session status.
 
+A user can have several open sessions at the same time.
+
+If the session identified by the Authorization header can't be found, a
+`401` error is returned (see discussion about error status codes in
+https://twitter.com/gr2m/status/697804572623007744)
+
 ### Sign In [PUT]
 
 + Request (application/vnd.api+json)
