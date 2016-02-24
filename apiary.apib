@@ -2,13 +2,31 @@ FORMAT: 1A
 
 # account-json-api
 
-An implementation of a [JSON-API v1](http://jsonapi.org/) RESTful interface for all things user accounts and sessions.
+An implementation of a [JSON-API v1](http://jsonapi.org/) RESTful interface for
+all things user accounts and sessions.
 
 Send your pull-requests to https://github.com/hoodiehq/account-json-api
 
+## Query parameters
+
+All routes support query parameters to refine responses
+
+- **[include](http://jsonapi.org/format/#fetching-relationships)**,
+  e.g. `GET /session?include=account.profile` to include properties of the
+  profile relationship
+- **[fields](http://jsonapi.org/format/#fetching-sparse-fieldsets)**,
+  e.g. `GET /session?fields[account]=username` to only return the username
+  of the account relationship
+- **[sort](http://jsonapi.org/format/#fetching-sorting)**,
+  e.g. `GET /accounts?sort=username` to sort all accounts ascending by name
+- **[page](http://jsonapi.org/format/#fetching-pagination)**,
+  e.g. `GET /accounts?page[number]=1&page[size]=10` to return only the first
+  10 accounts
+- **[filter](http://jsonapi.org/format/#fetching-filtering)**,
+  The `filter` is not defined by JSON API. Implementations must specify if how
+  the `filter` query parameter is supported.
 
 ## Group Current User
-
 
 ## Session [/session]
 
@@ -188,62 +206,6 @@ https://twitter.com/gr2m/status/697804572623007744)
             }]
         }
 
-### Check session, include account + profile [GET /session?include=account.profile]
-
-+ Request
-
-    + Headers
-
-            Accept: application/vnd.api+json
-            Authorization: Bearer sessionid123
-
-+ Response 200 (application/vnd.api+json)
-
-        {
-            "links": {
-                "self": "https://example.com/session"
-            },
-            "data": {
-                "id": "sessionid123",
-                "type": "session",
-                "relationships": {
-                    "account": {
-                        "links": {
-                            "related": "https://example.com/session/account"
-                        },
-                        "data": {
-                            "id": "abc1234",
-                            "type": "account"
-                        }
-                    }
-                }
-            },
-            "included": [{
-                "id": "abc1234",
-                "type": "account",
-                "attributes": {
-                    "username": "jane-doe"
-                },
-                "relationships": {
-                    "profile": {
-                        "links": {
-                            "related": "https://example.com/session/account/profile"
-                        },
-                        "data": {
-                            "id": "abc1234-profile",
-                            "type": "profile"
-                        }
-                    }
-                }
-            }, {
-                "id": "abc1234-profile",
-                "type": "profile",
-                "attributes": {
-                    "fullName": "Jane Doe"
-                }
-            }]
-        }
-
 ### Sign Out [DELETE]
 
 + Request
@@ -404,49 +366,6 @@ or set account properties or destroy their accounts.
                 "status": "401",
                 "title": "Unauthorized",
                 "detail": "Session invalid"
-            }]
-        }
-
-### Fetch, including profile [GET /session/account?include=profile]
-
-+ Request
-
-    + Headers
-
-            Accept: application/vnd.api+json
-            Authorization: Bearer sessionid123
-
-+ Response 200 (application/vnd.api+json)
-
-        {
-            "links": {
-                "self": "https://example.com/session/account"
-            },
-            "data": {
-                "id": "def678",
-                "type": "account",
-                "attributes": {
-                    "username": "jane-doe"
-                },
-                "relationships": {
-                    "profile": {
-                        "links": {
-                            "related": "https://example.com/session/account/profile"
-                        },
-                        "data": {
-                            "id": "def678-profile",
-                            "type": "profile"
-                        }
-                    }
-                }
-            },
-            "included": [{
-                "id": "def678-profile",
-                "type": "profile",
-                "attributes": {
-                    "fullName": "Jane Doe"
-                }
-
             }]
         }
 
@@ -1123,48 +1042,6 @@ Admins can fetch and manage all user accounts and their profile properties
                 "detail": "Session invalid"
             }]
         }
-
-### Fetch, include profile [GET /accounts/{id}?include=profile]
-
-+ Request
-
-    + Headers
-
-            Accept: application/vnd.api+json
-            Authorization: Bearer sessionid123
-
-+ Response 200 (application/vnd.api+json)
-
-            {
-                "links": {
-                    "self": "https://example.com/accounts/def678"
-                },
-                "data": {
-                    "id": "def678",
-                    "type": "account",
-                    "attributes": {
-                        "username": "jane-doe"
-                    }
-                },
-                "relationships": {
-                    "profile": {
-                        "links": {
-                            "related": "https://example.com/accounts/def678/profile"
-                        },
-                        "data": {
-                            "id": "def678-profile",
-                            "type": "profile"
-                        }
-                    }
-                },
-                "included": [{
-                    "id": "def678-profile",
-                    "type": "profile",
-                    "attributes": {
-                        "fullName": "Jane Doe"
-                    }
-                }]
-            }
 
 ### Update [PATCH]
 
