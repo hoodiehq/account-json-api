@@ -294,16 +294,6 @@ or set account properties or destroy their accounts.
                 }
             }
 
-+ Response 409 (application/vnd.api+json)
-
-        {
-            errors: [{
-                "status": "409",
-                "title": "Conflict",
-                "detail": "data.type must be 'account'"
-            }]
-        }
-
 + Response 403 (application/vnd.api+json)
 
         {
@@ -311,6 +301,26 @@ or set account properties or destroy their accounts.
                 "status": "403",
                 "title": "Forbidden",
                 "detail": "Authorization header not allowed"
+            }]
+        }
+
++ Response 409 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "409",
+                "title": "Conflict",
+                "detail": "An account with that username already exists"
+            }]
+        }
+
++ Response 409 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "409",
+                "title": "Conflict",
+                "detail": "data.type must be 'account'"
             }]
         }
 
@@ -720,6 +730,7 @@ A user can only see own requests. An admin can see all requests across accounts.
             }]
         }
 
+
 ## Request [/requests/{id}]
 
 `DELETE` always requires authentication and is restricted to admins.
@@ -813,7 +824,7 @@ might not require authentication, depending on the type of request.
 
 ## User Account Collection [/accounts]
 
-Admins can fetch and manage all user accounts and their profile properties
+Admins can fetch and manage all user accounts and their profile properties.
 
 ### Create [POST]
 
@@ -894,7 +905,7 @@ Admins can fetch and manage all user accounts and their profile properties
             errors: [{
                 "status": "409",
                 "title": "Conflict",
-                "detail": "data.type must be 'session'"
+                "detail": "data.type must be 'account'"
             }]
         }
 
