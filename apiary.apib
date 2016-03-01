@@ -428,7 +428,17 @@ or set account properties or destroy their accounts.
             errors: [{
                 "status": "409",
                 "title": "Conflict",
-                "detail": "'type' and 'id' provided don't match any existing document"
+                "detail": "data.type must be 'account'"
+            }]
+        }
+
++ Response 409 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "409",
+                "title": "Conflict",
+                "detail": "data.id must be '{id}'"
             }]
         }
 
