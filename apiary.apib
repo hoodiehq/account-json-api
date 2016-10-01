@@ -1253,3 +1253,63 @@ All custom user data is stored in the profile.
                 "detail": "'type' and 'id' provided don't match any existing document"
             }]
         }
+
+## User Session [/accounts/{id}/sessions]
+
+Admins can manage sessions for all user accounts
+
++ Parameters
+
+    + id: abc4567 (required, string) - id of account
+
+### Create [POST]
+
++ Request
+
+    + Headers
+
+            Accept: application/vnd.api+json
+            Authorization: Bearer sessionid123
+
++ Response 201 (application/vnd.api+json)
+
+        {
+            "links": {
+                "self": "https://example.com/accounts/abcd123/sessions/session123"
+            },
+            "data": {
+                "id": "session123",
+                "type": "session",
+                "relationships": {
+                    "account": {
+                        "links": {
+                            "related": "https://example.com/accounts/abcd123"
+                        },
+                        "data": {
+                            "id": "abcd123",
+                            "type": "account"
+                        }
+                    }
+                }   
+            }
+        }
+
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Authorization header missing"
+            }]
+        }
+
++ Response 401 (application/vnd.api+json)
+
+        {
+            errors: [{
+                "status": "401",
+                "title": "Unauthorized",
+                "detail": "Session invalid"
+            }]
+        }
