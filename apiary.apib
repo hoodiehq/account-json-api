@@ -1256,7 +1256,7 @@ All custom user data is stored in the profile.
 
 ## User Session [/accounts/{id}/sessions]
 
-
+Admins can manage sessions for all user accounts
 
 + Parameters
 
@@ -1278,10 +1278,22 @@ All custom user data is stored in the profile.
                 "self": "https://example.com/accounts/abcd123/sessions/session123"
             },
             "data": {
-                id: 'session123',
-                account: {
-                    id: 'account456',
-                    username: 'pat@example.com'
+                "id": "session123",
+                "type": "session",
+                "account": {
+                    "id": "abcd123",
+                    "username": "pat@example.com"
+                }
+            },
+            "relationships": {
+                "account": {
+                    "links": {
+                        "related": "https://example.com/accounts/abcd123"
+                    },
+                    "data": {
+                        "id": "abcd123",
+                        "type": "account"
+                    }
                 }
             }
         }
