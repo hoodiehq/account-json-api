@@ -35,6 +35,7 @@ PATCH  /accounts/{id}
 DELETE /accounts/{id}
 GET    /accounts/{id}/profile
 PATCH  /accounts/{id}/profile
+POST   /accounts/{id}/sessions
 ```
 
 Find the full spec at http://docs.accountjsonapi.apiary.io
