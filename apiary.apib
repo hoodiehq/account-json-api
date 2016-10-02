@@ -250,14 +250,25 @@ or set account properties or destroy their accounts.
 
             Accept: application/vnd.api+json
 
+    + Attributes (object)
+        + data (object, required)
+            + type (string, required)
+            + attributes (object, required)
+                + username (string, required)
+                + password (string, required)
+                + createdAt (string, optional) - timestamp the user account was created on the client
+            + id (string, optional)            
+
     + Body
 
             {
                 "data": {
                     "type": "account",
+                    "id": "abc4567"
                     "attributes": {
                         "username": "john-doe",
-                        "password": "secret"
+                        "password": "secret",
+                        "createdAt": "2016-10-02T04:07:20.243Z"
                     }
                 }
             }
