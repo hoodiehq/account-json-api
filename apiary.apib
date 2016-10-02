@@ -253,11 +253,10 @@ or set account properties or destroy their accounts.
     + Attributes (object)
         + data (object, required)
             + type (string, required)
-            + attributes (object, required)
-                + username (string, required)
-                + password (string, required)
-                + createdAt (string, optional) - timestamp the user account was created on the client
-            + id (string, optional)            
+            + attributes (object, required) - can contain any sign up info that should be included
+                + username (string)
+                + password (string)
+            + id (string)
 
     + Body
 
