@@ -250,14 +250,24 @@ or set account properties or destroy their accounts.
 
             Accept: application/vnd.api+json
 
+    + Attributes (object)
+        + data (object, required)
+            + type (string, required)
+            + attributes (object, required) - may contain the properties below as well as any others that should be included
+                + username (string)
+                + password (string)
+            + id (string) - the server may accept a client-generated id along with the request
+
     + Body
 
             {
                 "data": {
                     "type": "account",
+                    "id": "abc4567"
                     "attributes": {
                         "username": "john-doe",
-                        "password": "secret"
+                        "password": "secret",
+                        "createdAt": "2016-10-02T04:07:20.243Z"
                     }
                 }
             }
