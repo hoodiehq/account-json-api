@@ -253,10 +253,10 @@ or set account properties or destroy their accounts.
     + Attributes (object)
         + data (object, required)
             + type (string, required)
-            + attributes (object, required) - can contain any sign up info that should be included
+            + attributes (object, required) - may contain the properties below as well as any others that should be included
                 + username (string)
                 + password (string)
-            + id (string)
+            + id (string) - the server may accept a client-generated id along with the request
 
     + Body
 
