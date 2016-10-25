@@ -8,13 +8,14 @@ var protagonist = require('protagonist')
 var source = fs.readFileSync('./apiary.apib').toString()
 var tree = protagonist.parseSync(source)
 
-var pathNodes = _.flatten(findNodes(has('attributes.href'), tree), true).filter(Boolean)
+var pathNodes = _.flattenDeep(findNodes(has('attributes.href'), tree)).filter(Boolean)
+
 pathNodes.forEach(function (pathNode, i) {
   var path = pathNode.attributes.href
-  var methodNodes = _.flatten(findNodes(has('attributes.method'), pathNode.content), true).filter(Boolean)
+  var methodNodes = _.flattenDeep(findNodes(has('attributes.method'), pathNode.content)).filter(Boolean)
   _.uniq(methodNodes, 'attributes.method').forEach(function (methodNode, j) {
     var method = methodNode.attributes.method
-    console.log('%s %s', _.padRight(method, 6), path)
+    console.log('%s %s', _.padEnd(method, 6), path)
   })
 })
 
