@@ -25,6 +25,6 @@
   "devDependencies": {
     "lodash": "^4.16.4",
     "protagonist": "^1.2.0",
-    "semantic-release": "^7.0.1"
+    "semantic-release": "^8.0.0"
   }
 }
