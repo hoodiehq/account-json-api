@@ -1,26 +1,21 @@
-sudo: false
 language: node_js
 cache:
   directories:
-    - node_modules
-notifications:
-  email: false
+    - ~/.npm
 node_js:
-  - 4
-before_script:
-  - npm prune
-after_success:
-  - npm run semantic-release
-branches:
-  except:
-    - /^v\d+\.\d+\.\d+$/
+  - lts/*
 
-# for protagonist
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - gcc-4.8
-    - g++-4.8
-env: CXX="g++-4.8" CC="gcc-4.8"
+# Trigger a push build on master and greenkeeper branches + PRs build on every branches
+# Avoid double build on PRs (See https://github.com/travis-ci/travis-ci/issues/1147)
+branches:
+  only:
+    - master
+    - /^greenkeeper.*$/
+    
+jobs:
+  include:
+    - script: npm run test
+    - stage: release
+      node_js: lts/*
+      script:
+        - npm run semantic-release
