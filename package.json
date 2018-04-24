@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/hoodiehq/account-json-api#readme",
   "devDependencies": {
-    "lodash": "^4.16.4",
+    "lodash": "^4.17.9",
     "protagonist": "^1.2.0",
     "semantic-release": "^15.0.0"
   }
